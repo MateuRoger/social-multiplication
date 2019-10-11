@@ -1,5 +1,6 @@
 package microservices.book.multiplication.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -30,9 +31,9 @@ class MultiplicationServiceTest {
     Multiplication multiplication = multiplicationService.createRandomMultiplication();
 
     //then
-    assertEquals(50, multiplication.getFactorA());
-    assertEquals(30, multiplication.getFactorB());
-    assertEquals(1500, multiplication.getResult());
+    assertThat(multiplication.getFactorA()).isEqualTo(50);
+    assertThat(multiplication.getFactorB()).isEqualTo(30);
+    assertThat(multiplication.getResult()).isEqualTo(1500);
   }
 
 }
