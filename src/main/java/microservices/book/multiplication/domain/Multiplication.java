@@ -6,11 +6,11 @@ package microservices.book.multiplication.domain;
 public class Multiplication {
 
   // Both factors
-  private int factorA;
-  private int factorB;
+  private final int factorA;
+  private final int factorB;
 
   // The result of the operation A * B
-  private int result;
+  private final int result;
 
   public Multiplication(int factorA, int factorB) {
     this.factorA = factorA;
