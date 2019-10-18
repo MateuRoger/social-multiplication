@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import microservices.book.multiplication.domain.Multiplication;
+import microservices.book.multiplication.domain.MultiplicationResultAttempt;
+import microservices.book.multiplication.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -39,6 +41,37 @@ class MultiplicationServiceImplTest {
     //then
     assertThat(multiplication.getFactorA()).isEqualTo(50);
     assertThat(multiplication.getFactorB()).isEqualTo(30);
-    assertThat(multiplication.getResult()).isEqualTo(1500);
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given a multiplication result attempt with a correct result, when it is check, then the result is true")
+  void checkCorrectAttemptTest(){
+    // given
+    Multiplication multiplication = new Multiplication(50, 60);
+    User user = new User("John_doe");
+    MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3000);
+
+    //when
+    boolean attemptResult = multiplicationService.checkAttempt(attempt);
+
+    //then
+    assertThat(attemptResult).isTrue();
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given a multiplication result attempt with a wrong result, when it is check, then the result is false")
+  void checkWrongAttemptTest(){
+    // given
+    Multiplication multiplication = new Multiplication(50, 60);
+    User user = new User("John_doe");
+    MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3010);
+
+    //when
+    boolean attemptResult = multiplicationService.checkAttempt(attempt);
+
+    //then
+    assertThat(attemptResult).isFalse() ;
   }
 }
