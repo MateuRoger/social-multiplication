@@ -15,13 +15,21 @@ public class MultiplicationResultAttempt {
 
   // Empty constructor for JSON (de)serialization
 
-
+  /**
+   * Empty Constructor.
+   */
   public MultiplicationResultAttempt() {
     user = null;
     multiplication = null;
     resultAttempt = -1;
   }
 
+  /**
+   * Full constructor.
+   * @param user the {@link User} who do the attempt.
+   * @param multiplication the {@link Multiplication} to done
+   * @param resultAttempt the given result.
+   */
   public MultiplicationResultAttempt(User user,
       Multiplication multiplication, int resultAttempt) {
     this.user = user;

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * This represents a Multiplication (a * b)
+ * This represents a Multiplication (a * b).
  */
 public class Multiplication {
 
