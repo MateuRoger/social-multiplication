@@ -6,13 +6,13 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.jfr.Description;
 import microservices.book.multiplication.controller.MultiplicationResultAttemptController.ResultResponse;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
 import microservices.book.multiplication.service.MultiplicationService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,15 +42,15 @@ class MultiplicationResultAttemptControllerTest {
   }
 
   @Test
-  @Tag("Integration")
-  @Description("Given a correct multiplication attempt, when it is checked, then returns true ")
+  @Tag("API-Test")
+  @DisplayName("Given a correct multiplication attempt, when it is checked, then returns true ")
   void postResultReturnCorrect() throws Exception {
     genericParameterizedTest(true);
   }
 
   @Test
-  @Tag("Integration")
-  @Description("Given an incorrect multiplication attempt, when it is checked, then returns false ")
+  @Tag("API-Test")
+  @DisplayName("Given an incorrect multiplication attempt, when it is checked, then returns false ")
   void postResultReturnNotCorrect() throws Exception {
     genericParameterizedTest(false);
   }
