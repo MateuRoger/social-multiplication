@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.service.MultiplicationService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -36,6 +38,8 @@ class MultiplicationControllerTest {
   }
 
   @Test
+  @Tag("API-Test")
+  @DisplayName("When someone asks for a random multiplication, then returns a Json with the random multiplication")
   void getRandomMultiplicationTest() throws Exception {
     // given
     given(multiplicationService.createRandomMultiplication())
@@ -43,7 +47,7 @@ class MultiplicationControllerTest {
 
     //When
     MockHttpServletResponse response = mvc.perform(
-        get("/multiplication/random")
+        get("/multiplications/random")
             .accept(MediaType.APPLICATION_JSON))
         .andReturn().getResponse();
 
