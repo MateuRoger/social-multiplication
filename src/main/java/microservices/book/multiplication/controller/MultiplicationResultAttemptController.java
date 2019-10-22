@@ -20,38 +20,13 @@ final class MultiplicationResultAttemptController {
     this.multiplicationService = multiplicationService;
   }
 
-  /**
-   * Inner class that represents the result of the {@link MultiplicationResultAttempt}.
-   */
-  static final class ResultResponse {
-
-    private final boolean correct;
-
-    /**
-     * Empty Constructor.
-     */
-    public ResultResponse() {
-      correct = false;
-    }
-
-    /**
-     * Parametrized Constructor.
-     *
-     * @param correct indicates if the {@link MultiplicationResultAttempt} is correct or not.
-     */
-    public ResultResponse(boolean correct) {
-      this.correct = correct;
-    }
-
-    public boolean isCorrect() {
-      return correct;
-    }
-  }
-
   @PostMapping
-  ResponseEntity<ResultResponse> postResult(
+  public ResponseEntity<MultiplicationResultAttempt> postResult(
       @RequestBody MultiplicationResultAttempt multiplicationResultAttempt) {
-    return ResponseEntity.ok(
-        new ResultResponse(multiplicationService.checkAttempt(multiplicationResultAttempt)));
+    return ResponseEntity.ok(new MultiplicationResultAttempt(
+        multiplicationResultAttempt.getUser(),
+        multiplicationResultAttempt.getMultiplication(),
+        multiplicationResultAttempt.getResultAttempt(),
+        multiplicationService.checkAttempt(multiplicationResultAttempt)));
   }
 }

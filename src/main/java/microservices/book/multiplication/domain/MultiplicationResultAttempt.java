@@ -12,6 +12,7 @@ public class MultiplicationResultAttempt {
   private final User user;
   private final Multiplication multiplication;
   private final int resultAttempt;
+  private final boolean correct;
 
   // Empty constructor for JSON (de)serialization
 
@@ -22,6 +23,7 @@ public class MultiplicationResultAttempt {
     user = null;
     multiplication = null;
     resultAttempt = -1;
+    correct = false;
   }
 
   /**
@@ -29,12 +31,14 @@ public class MultiplicationResultAttempt {
    * @param user the {@link User} who do the attempt.
    * @param multiplication the {@link Multiplication} to done
    * @param resultAttempt the given result.
+   * @param correct indicates whether the {@code resultAttempt} is correct or not
    */
   public MultiplicationResultAttempt(User user,
-      Multiplication multiplication, int resultAttempt) {
+      Multiplication multiplication, int resultAttempt, boolean correct) {
     this.user = user;
     this.multiplication = multiplication;
     this.resultAttempt = resultAttempt;
+    this.correct = correct;
   }
 
   public User getUser() {
@@ -47,6 +51,10 @@ public class MultiplicationResultAttempt {
 
   public int getResultAttempt() {
     return resultAttempt;
+  }
+
+  public boolean isCorrect() {
+    return correct;
   }
 
   @Override
@@ -63,6 +71,7 @@ public class MultiplicationResultAttempt {
 
     return new EqualsBuilder()
         .append(resultAttempt, attempt.resultAttempt)
+        .append(correct, attempt.correct)
         .append(user, attempt.user)
         .append(multiplication, attempt.multiplication)
         .isEquals();
@@ -74,9 +83,9 @@ public class MultiplicationResultAttempt {
         .append(user)
         .append(multiplication)
         .append(resultAttempt)
+        .append(correct)
         .toHashCode();
   }
-
 
   @Override
   public String toString() {
@@ -84,6 +93,7 @@ public class MultiplicationResultAttempt {
         .append("user", user)
         .append("multiplication", multiplication)
         .append("resultAttempt", resultAttempt)
+        .append("correct", correct)
         .toString();
   }
 }
