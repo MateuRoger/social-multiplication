@@ -2,10 +2,17 @@ package microservices.book.multiplication.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Optional;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.repository.MultiplicationRepository;
+import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
+import microservices.book.multiplication.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -15,8 +22,13 @@ import org.mockito.MockitoAnnotations;
 
 class MultiplicationServiceImplTest {
 
+  @Mock
+  MultiplicationRepository multiplicationRepository;
   private MultiplicationServiceImpl multiplicationService;
-
+  @Mock
+  private MultiplicationResultAttemptRepository attemptRepository;
+  @Mock
+  private UserRepository userRepository;
   @Mock
   private RandomGeneratorService randomGeneratorService;
 
@@ -24,7 +36,8 @@ class MultiplicationServiceImplTest {
   void setUp() {
     // With this call to initMocks we tell Mockito to process the annotations
     MockitoAnnotations.initMocks(this);
-    multiplicationService = new MultiplicationServiceImpl(randomGeneratorService);
+    multiplicationService = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository,
+        userRepository, multiplicationRepository);
   }
 
   @Test
@@ -36,7 +49,7 @@ class MultiplicationServiceImplTest {
     given(randomGeneratorService.generateRandomFactor()).willReturn(50, 30);
 
     //when
-    Multiplication multiplication = multiplicationService.createRandomMultiplication();
+    final Multiplication multiplication = multiplicationService.createRandomMultiplication();
 
     //then
     assertThat(multiplication.getFactorA()).isEqualTo(50);
@@ -45,35 +58,149 @@ class MultiplicationServiceImplTest {
 
   @Test
   @Tag("Unit")
-  @DisplayName("Given a multiplication result attempt with a correct result, when it is check, then the result is true")
-  void checkCorrectAttemptTest(){
+  @DisplayName("Given a correct multiplication result attempt, when it is checks, then returns true")
+  void givenCorrectMultiplicationResultAttempt_whenChecks_thenReturnsTrue() {
     // given
-    Multiplication multiplication = new Multiplication(50, 60);
-    User user = new User("John_doe");
-    MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3000,
-        false);
+    final String jhonDoeAlias = "John_doe";
+    final Multiplication multiplication = new Multiplication(50, 60);
+    final User user = new User(jhonDoeAlias);
+    final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
+        user, multiplication, 3000, false);
+
+    final MultiplicationResultAttempt verifiedAttempt = new MultiplicationResultAttempt(
+        user, multiplication, 3000, true);
+
+    given(userRepository.findByAlias(jhonDoeAlias)).willReturn(Optional.empty());
 
     //when
-    boolean attemptResult = multiplicationService.checkAttempt(attempt);
+    final boolean attemptResult = multiplicationService.checkAttempt(attempt);
 
     //then
     assertThat(attemptResult).isTrue();
+    verify(attemptRepository).save(verifiedAttempt);
   }
 
   @Test
   @Tag("Unit")
-  @DisplayName("Given a multiplication result attempt with a wrong result, when it is check, then the result is false")
-  void checkWrongAttemptTest(){
+  @DisplayName("Given an incorrect multiplication result attempt, when it is checks, then returns false")
+  void givenIncorrectMultiplicationResultAttempt_whenChecks_thenReturnsFalse() {
     // given
-    Multiplication multiplication = new Multiplication(50, 60);
-    User user = new User("John_doe");
-    MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3010,
-        false);
+    final String jhonDoeAlias = "John_doe";
+    final Multiplication multiplication = new Multiplication(50, 60);
+    final User user = new User(jhonDoeAlias);
+    final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
+        user, multiplication, 3010, false);
+
+    given(userRepository.findByAlias(jhonDoeAlias)).willReturn(Optional.empty());
 
     //when
-    boolean attemptResult = multiplicationService.checkAttempt(attempt);
+    final boolean attemptResult = multiplicationService.checkAttempt(attempt);
 
     //then
-    assertThat(attemptResult).isFalse() ;
+    assertThat(attemptResult).isFalse();
+    verify(attemptRepository).save(attempt);
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given the same multiplication twice, when checks the attempt, then the stored multiplication is used")
+  void givenSameMultiplicationTwice_whenChecks_themUsedStoredMultiplication()
+      throws NoSuchFieldException, IllegalAccessException {
+    // given
+    final String jhonDoeAlias = "John_doe";
+    final int factorA = 50;
+    final int factorB = 60;
+    final Multiplication multiplication = new Multiplication(factorA, factorB);
+    final Multiplication existingMultiplication = getStoredMultiplication();
+    final User user = new User(jhonDoeAlias);
+
+    final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
+        user, multiplication, 3000, false);
+    final MultiplicationResultAttempt expectedCorrectAttempt = new MultiplicationResultAttempt(
+        user, existingMultiplication, 3000, true);
+
+    given(multiplicationRepository.findByFactorAAndFactorB(factorA, factorB)).willReturn(
+        Optional.of(existingMultiplication));
+
+    // when
+    multiplicationService.checkAttempt(attempt);
+
+    // then
+    verify(attemptRepository).save(expectedCorrectAttempt);
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given the a multiplication for first time, when checks the attempt, then the new multiplication is used")
+  void givenSameMultiplicationFirstTime_whenChecks_themNewMultiplicationIsUsed() {
+    // given
+    final String jhonDoeAlias = "John_doe";
+    final int factor50 = 50;
+    final int factor60 = 60;
+    final Multiplication multiplication = new Multiplication(factor50, factor60);
+    final User user = new User(jhonDoeAlias);
+
+    final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
+        user, multiplication, 3000, false);
+    final MultiplicationResultAttempt expectedCorrectAttempt = new MultiplicationResultAttempt(
+        user, multiplication, 3000, true);
+
+    given(multiplicationRepository.findByFactorAAndFactorB(factor50, factor60)).willReturn(
+        Optional.empty());
+
+    // when
+    multiplicationService.checkAttempt(attempt);
+
+    // then
+    verify(attemptRepository).save(expectedCorrectAttempt);
+  }
+
+  private Multiplication getStoredMultiplication()
+      throws NoSuchFieldException, IllegalAccessException {
+    final Multiplication existingMultiplication = new Multiplication(50, 60);
+    final Field idField = existingMultiplication.getClass().getDeclaredField("id");
+    idField.setAccessible(true);
+    idField.set(existingMultiplication, (long) 1111);
+
+    return existingMultiplication;
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given a user with previous attempts, when retrives he's stats, then returns top 5 attempts")
+  void givenUserWithPreviousAttempts_whenRetrivesStats_thenReturnsTtop5() {
+    // given
+    final String johnDoeAlias = "John_doe";
+    int factor50 = 50;
+    int factor60 = 60;
+    final List<MultiplicationResultAttempt> latestAttempts = generateTop5Attempts(johnDoeAlias,
+        factor50, factor60);
+
+    // User don't exist previously
+    given(userRepository.findByAlias(johnDoeAlias)).willReturn(Optional.empty());
+    given(attemptRepository.findTop5ByUserAliasOrderByIdDesc(johnDoeAlias))
+        .willReturn(latestAttempts);
+
+    // when
+    List<MultiplicationResultAttempt> latestAttemptResult = this.multiplicationService
+        .getStatsForUser(johnDoeAlias);
+
+    // then
+    assertThat(latestAttemptResult).isEqualTo(latestAttempts);
+
+  }
+
+  private List<MultiplicationResultAttempt> generateTop5Attempts(String johnDoeAlias, int factor50,
+      int factor60) {
+    final Multiplication multiplication = new Multiplication(factor50, factor60);
+    final User user = new User(johnDoeAlias);
+
+    final MultiplicationResultAttempt attempt1 = new MultiplicationResultAttempt(
+        user, multiplication, 3010, false);
+
+    final MultiplicationResultAttempt attempt2 = new MultiplicationResultAttempt(
+        user, multiplication, 3051, false);
+
+    return List.of(attempt1, attempt2);
   }
 }

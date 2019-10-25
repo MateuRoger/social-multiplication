@@ -3,9 +3,11 @@ package microservices.book.multiplication.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
@@ -35,6 +37,8 @@ class MultiplicationResultAttemptControllerTest {
   // This object will be magically initiated by the initFields method bellow.
   private JacksonTester<MultiplicationResultAttempt> jsonResult;
 
+  private JacksonTester<List<MultiplicationResultAttempt>> jsonResultAttemptList;
+
   @BeforeEach
   void setup() {
     JacksonTester.initFields(this, new ObjectMapper());
@@ -43,14 +47,14 @@ class MultiplicationResultAttemptControllerTest {
   @Test
   @Tag("API-Test")
   @DisplayName("Given a correct multiplication attempt, when it is checked, then returns true ")
-  void postResultReturnCorrect() throws Exception {
+  void givenCorrectMultiplicationAttempt_whenChecksIt_thenReturnsTrue() throws Exception {
     genericParameterizedTest(true);
   }
 
   @Test
   @Tag("API-Test")
   @DisplayName("Given an incorrect multiplication attempt, when it is checked, then returns false ")
-  void postResultReturnNotCorrect() throws Exception {
+  void givenInCorrectMultiplicationAttempt_whenChecksIt_thenReturnsFalse() throws Exception {
     genericParameterizedTest(false);
   }
 
@@ -82,6 +86,36 @@ class MultiplicationResultAttemptControllerTest {
                 attempt.getMultiplication(),
                 attempt.getResultAttempt(),
                 correct)
+        ).getJson());
+  }
+
+  @Test
+  @Tag("API-Test")
+  @DisplayName("Given an user alias, when gets his statistics, then returns his top 5 attempts")
+  void givenUserAlias_whenGetsStatistics_thenReturnsTop5Attempts() throws Exception {
+    // given
+    final String johnDoeAlias = "john_doe";
+    final User user = new User(johnDoeAlias);
+    final int factor50 = 50;
+    final int factor70 = 70;
+    final Multiplication multiplication = new Multiplication(factor50, factor70);
+    final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
+        user, multiplication, 3500, false);
+
+    List<MultiplicationResultAttempt> recentAttempts = List.of(attempt, attempt);
+    given(multiplicationService.getStatsForUser(johnDoeAlias)).willReturn(recentAttempts);
+
+    // when
+    MockHttpServletResponse response = mvc.perform(
+        get("/results")
+            .param("alias", johnDoeAlias))
+        .andReturn().getResponse();
+
+    // then
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.getContentAsString()).isEqualTo(
+        jsonResultAttemptList.write(
+            recentAttempts
         ).getJson());
   }
 }

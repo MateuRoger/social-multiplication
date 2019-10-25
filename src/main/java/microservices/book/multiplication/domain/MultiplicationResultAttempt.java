@@ -1,23 +1,34 @@
 package microservices.book.multiplication.domain;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import java.util.Objects;
+import java.util.StringJoiner;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 /**
  * Identifies the attempt from a {@link User} to solve a {@link Multiplication}.
  */
+@Entity
 public class MultiplicationResultAttempt {
 
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "USER_ID")
   private final User user;
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "MULTIPLICATIOM_ID")
   private final Multiplication multiplication;
   private final int resultAttempt;
   private final boolean correct;
-
-  // Empty constructor for JSON (de)serialization
+  @Id
+  @GeneratedValue
+  private Long id;
 
   /**
-   * Empty Constructor.
+   * Empty constructor for JSON/JPA
    */
   public MultiplicationResultAttempt() {
     user = null;
@@ -28,6 +39,7 @@ public class MultiplicationResultAttempt {
 
   /**
    * Full constructor.
+   *
    * @param user the {@link User} who do the attempt.
    * @param multiplication the {@link Multiplication} to done
    * @param resultAttempt the given result.
@@ -39,6 +51,10 @@ public class MultiplicationResultAttempt {
     this.multiplication = multiplication;
     this.resultAttempt = resultAttempt;
     this.correct = correct;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public User getUser() {
@@ -62,38 +78,30 @@ public class MultiplicationResultAttempt {
     if (this == o) {
       return true;
     }
-
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
     MultiplicationResultAttempt attempt = (MultiplicationResultAttempt) o;
-
-    return new EqualsBuilder()
-        .append(resultAttempt, attempt.resultAttempt)
-        .append(correct, attempt.correct)
-        .append(user, attempt.user)
-        .append(multiplication, attempt.multiplication)
-        .isEquals();
+    return resultAttempt == attempt.resultAttempt &&
+        correct == attempt.correct &&
+        Objects.equals(user, attempt.user) &&
+        Objects.equals(multiplication, attempt.multiplication);
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
-        .append(user)
-        .append(multiplication)
-        .append(resultAttempt)
-        .append(correct)
-        .toHashCode();
+    return Objects.hash(user, multiplication, resultAttempt, correct);
   }
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
-        .append("user", user)
-        .append("multiplication", multiplication)
-        .append("resultAttempt", resultAttempt)
-        .append("correct", correct)
+    return new StringJoiner(", ", MultiplicationResultAttempt.class.getSimpleName() + "[",
+        "]")
+        .add("id=" + id)
+        .add("user=" + user)
+        .add("multiplication=" + multiplication)
+        .add("resultAttempt=" + resultAttempt)
+        .add("correct=" + correct)
         .toString();
   }
 }

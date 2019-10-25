@@ -1,23 +1,42 @@
 package microservices.book.multiplication.domain;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import java.util.Objects;
+import java.util.StringJoiner;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 /**
  * Stores information to identify the user.
  */
+@Entity
 public class User {
 
   private final String alias;
+  @Id
+  @GeneratedValue
+  @Column(name = "USER_ID")
+  private Long id;
 
-  // Empty constructor for JSON (de)serialization
+  /**
+   * Empty constructor for JSON/JPA
+   */
   protected User() {
     alias = null;
   }
 
+  /**
+   * Parametrized Constructor
+   *
+   * @param alias the user's alias
+   */
   public User(String alias) {
     this.alias = alias;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public String getAlias() {
@@ -29,29 +48,23 @@ public class User {
     if (this == o) {
       return true;
     }
-
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
     User user = (User) o;
-
-    return new EqualsBuilder()
-        .append(alias, user.alias)
-        .isEquals();
+    return alias.equals(user.alias);
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
-        .append(alias)
-        .toHashCode();
+    return Objects.hash(alias);
   }
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
-        .append("alias", alias)
+    return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+        .add("id=" + id)
+        .add("alias='" + alias + "'")
         .toString();
   }
 }

@@ -1,7 +1,9 @@
 package microservices.book.multiplication.service;
 
+import java.util.List;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
+import microservices.book.multiplication.domain.User;
 
 public interface MultiplicationService {
 
@@ -19,4 +21,13 @@ public interface MultiplicationService {
    * @return true if the attempt matches the result of the  multiplication, false otherwise.
    */
   boolean checkAttempt(final MultiplicationResultAttempt resultAttempt);
+
+  /**
+   * Gets the statistics for a given {@link User}.
+   *
+   * @param userAlias the user's alias
+   * @return a list of {@link MultiplicationResultAttempt} objects, being the past attempts of the
+   * user.
+   */
+  List<MultiplicationResultAttempt> getStatsForUser(final String userAlias);
 }
