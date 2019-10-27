@@ -4,6 +4,17 @@ plugins {
     id 'java'
 }
 
+ext {
+    springVersion = '2.2.0.RELEASE'
+    apacheCommonsVersion = '3.4'
+    lombokVersion = '1.18.10'
+    h2Version = '1.4.200'
+    jaxbVersion = '2.2.11'
+    activationVersion = '1.1.1'
+    junitVersion = '5.5.2'
+    assertJVersion = '3.13.2'
+}
+
 group = 'microservice.book'
 version = '0.0.1-SNAPSHOT'
 
@@ -16,23 +27,24 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.0.RELEASE'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.2.0.RELEASE'
-    compileOnly group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+    implementation "org.springframework.boot:spring-boot-starter-web:$springVersion"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springVersion"
 
-    runtimeOnly group: 'com.h2database', name: 'h2', version: '1.4.200'
+    compileOnly "org.apache.commons:commons-lang3:$apacheCommonsVersion"
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+
+    runtimeOnly "com.h2database:h2:$h2Version"
     // JAX-B dependencies for JDK 9+
-    runtimeOnly group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.11'
-    runtimeOnly group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.2.11'
-    runtimeOnly group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.11'
-    runtimeOnly group: 'javax.activation', name: 'activation', version: '1.1.1'
+    runtimeOnly "javax.xml.bind:jaxb-api:$jaxbVersion"
+    runtimeOnly "com.sun.xml.bind:jaxb-core:$jaxbVersion"
+    runtimeOnly "com.sun.xml.bind:jaxb-impl:$jaxbVersion"
+    runtimeOnly "javax.activation:activation:$activationVersion"
 
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.2.0.RELEASE'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.3.1'
-    testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.13.2'
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "com.h2database:h2:$h2Version"
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
 }
 
 test {
