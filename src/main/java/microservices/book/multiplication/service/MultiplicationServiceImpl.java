@@ -2,9 +2,12 @@ package microservices.book.multiplication.service;
 
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.event.EventDispatcher;
+import microservices.book.multiplication.event.MultiplicationSolvedEvent;
 import microservices.book.multiplication.repository.MultiplicationRepository;
 import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
@@ -18,16 +21,19 @@ public class MultiplicationServiceImpl implements MultiplicationService {
   private final MultiplicationResultAttemptRepository attemptRepository;
   private final UserRepository userRepository;
   private final MultiplicationRepository multiplicationRepository;
+  private final EventDispatcher eventDispatcher;
 
   public MultiplicationServiceImpl(
       RandomGeneratorService randomGeneratorService,
       MultiplicationResultAttemptRepository attemptRepository,
       UserRepository userRepository,
-      MultiplicationRepository multiplicationRepository) {
+      MultiplicationRepository multiplicationRepository,
+      EventDispatcher eventDispatcher) {
     this.randomGeneratorService = randomGeneratorService;
     this.attemptRepository = attemptRepository;
     this.userRepository = userRepository;
     this.multiplicationRepository = multiplicationRepository;
+    this.eventDispatcher = eventDispatcher;
   }
 
   @Override
@@ -37,6 +43,7 @@ public class MultiplicationServiceImpl implements MultiplicationService {
     return new Multiplication(factorA, factorB);
   }
 
+  @Transactional
   @Override
   public boolean checkAttempt(final MultiplicationResultAttempt attempt) {
     // Checks if the user already exists for the alias
@@ -62,6 +69,12 @@ public class MultiplicationServiceImpl implements MultiplicationService {
 
     // Stores the attempt
     this.attemptRepository.save(checkedAttempt);
+
+    // Communicates the result via Event
+    this.eventDispatcher.send(
+        new MultiplicationSolvedEvent(checkedAttempt.getId(),
+            checkedAttempt.getUser().getId(),
+            checkedAttempt.isCorrect()));
 
     return isCorrect;
   }

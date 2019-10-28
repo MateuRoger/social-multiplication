@@ -1,6 +1,7 @@
 package microservices.book.multiplication.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -10,6 +11,8 @@ import java.util.Optional;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
+import microservices.book.multiplication.event.EventDispatcher;
+import microservices.book.multiplication.event.MultiplicationSolvedEvent;
 import microservices.book.multiplication.repository.MultiplicationRepository;
 import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
@@ -31,13 +34,15 @@ class MultiplicationServiceImplTest {
   private UserRepository userRepository;
   @Mock
   private RandomGeneratorService randomGeneratorService;
+  @Mock
+  private EventDispatcher eventDispatcher;
 
   @BeforeEach
   void setUp() {
     // With this call to initMocks we tell Mockito to process the annotations
     MockitoAnnotations.initMocks(this);
     multiplicationService = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository,
-        userRepository, multiplicationRepository);
+        userRepository, multiplicationRepository, eventDispatcher);
   }
 
   @Test
@@ -70,6 +75,9 @@ class MultiplicationServiceImplTest {
     final MultiplicationResultAttempt verifiedAttempt = new MultiplicationResultAttempt(
         user, multiplication, 3000, true);
 
+    final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
+        attempt.getId(), user.getId(), true);
+
     given(userRepository.findByAlias(jhonDoeAlias)).willReturn(Optional.empty());
 
     //when
@@ -78,6 +86,7 @@ class MultiplicationServiceImplTest {
     //then
     assertThat(attemptResult).isTrue();
     verify(attemptRepository).save(verifiedAttempt);
+    verify(eventDispatcher).send(eq(event));
   }
 
   @Test
@@ -91,6 +100,9 @@ class MultiplicationServiceImplTest {
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
         user, multiplication, 3010, false);
 
+    final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
+        attempt.getId(), user.getId(), false);
+
     given(userRepository.findByAlias(jhonDoeAlias)).willReturn(Optional.empty());
 
     //when
@@ -99,6 +111,7 @@ class MultiplicationServiceImplTest {
     //then
     assertThat(attemptResult).isFalse();
     verify(attemptRepository).save(attempt);
+    verify(eventDispatcher).send(eq(event));
   }
 
   @Test
@@ -118,6 +131,8 @@ class MultiplicationServiceImplTest {
         user, multiplication, 3000, false);
     final MultiplicationResultAttempt expectedCorrectAttempt = new MultiplicationResultAttempt(
         user, existingMultiplication, 3000, true);
+    final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
+        attempt.getId(), user.getId(), true);
 
     given(multiplicationRepository.findByFactorAAndFactorB(factorA, factorB)).willReturn(
         Optional.of(existingMultiplication));
@@ -127,6 +142,7 @@ class MultiplicationServiceImplTest {
 
     // then
     verify(attemptRepository).save(expectedCorrectAttempt);
+    verify(eventDispatcher).send(eq(event));
   }
 
   @Test
@@ -144,6 +160,8 @@ class MultiplicationServiceImplTest {
         user, multiplication, 3000, false);
     final MultiplicationResultAttempt expectedCorrectAttempt = new MultiplicationResultAttempt(
         user, multiplication, 3000, true);
+    final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
+        attempt.getId(), user.getId(), true);
 
     given(multiplicationRepository.findByFactorAAndFactorB(factor50, factor60)).willReturn(
         Optional.empty());
@@ -153,6 +171,7 @@ class MultiplicationServiceImplTest {
 
     // then
     verify(attemptRepository).save(expectedCorrectAttempt);
+    verify(eventDispatcher).send(eq(event));
   }
 
   private Multiplication getStoredMultiplication()
