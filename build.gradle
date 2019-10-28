@@ -29,6 +29,7 @@ repositories {
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web:$springVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springVersion"
+    implementation "org.springframework.boot:spring-boot-starter-amqp:$springVersion"
 
     compileOnly "org.apache.commons:commons-lang3:$apacheCommonsVersion"
     compileOnly "org.projectlombok:lombok:$lombokVersion"
