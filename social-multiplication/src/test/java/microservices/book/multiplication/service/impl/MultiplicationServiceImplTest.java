@@ -27,7 +27,7 @@ import org.mockito.MockitoAnnotations;
 class MultiplicationServiceImplTest {
 
   @Mock
-  MultiplicationRepository multiplicationRepository;
+  private MultiplicationRepository multiplicationRepository;
   private MultiplicationServiceImpl multiplicationService;
   @Mock
   private MultiplicationResultAttemptRepository attemptRepository;
