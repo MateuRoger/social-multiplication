@@ -11,6 +11,7 @@ import microservices.book.multiplication.event.MultiplicationSolvedEvent;
 import microservices.book.multiplication.repository.MultiplicationRepository;
 import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -23,6 +24,7 @@ public class MultiplicationServiceImpl implements MultiplicationService {
   private final MultiplicationRepository multiplicationRepository;
   private final EventDispatcher eventDispatcher;
 
+  @Autowired
   public MultiplicationServiceImpl(
       RandomGeneratorService randomGeneratorService,
       MultiplicationResultAttemptRepository attemptRepository,

@@ -40,10 +40,10 @@ public class MultiplicationResultAttempt {
   /**
    * Full constructor.
    *
-   * @param user the {@link User} who do the attempt.
+   * @param user           the {@link User} who do the attempt.
    * @param multiplication the {@link Multiplication} to done
-   * @param resultAttempt the given result.
-   * @param correct indicates whether the {@code resultAttempt} is correct or not
+   * @param resultAttempt  the given result.
+   * @param correct        indicates whether the {@code resultAttempt} is correct or not
    */
   public MultiplicationResultAttempt(User user,
       Multiplication multiplication, int resultAttempt, boolean correct) {
