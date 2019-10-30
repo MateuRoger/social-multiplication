@@ -13,7 +13,7 @@ public class RabbitMQConfiguration {
 
   @Bean
   public TopicExchange multiplicationExchange(
-      @Value("$(multiplication.exchange") final String exchangeName) {
+      @Value("${multiplication.exchange}") final String exchangeName) {
     return new TopicExchange(exchangeName);
   }
 

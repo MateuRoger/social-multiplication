@@ -5,14 +5,13 @@ plugins {
 }
 
 ext {
-    springVersion = '2.2.0.RELEASE'
-    apacheCommonsVersion = '3.4'
-    lombokVersion = '1.18.10'
-    h2Version = '1.4.200'
-    jaxbVersion = '2.2.11'
-    activationVersion = '1.1.1'
-    junitVersion = '5.5.2'
     assertJVersion = '3.13.2'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 group = 'microservice.book'
@@ -27,25 +26,21 @@ repositories {
 }
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-web:$springVersion"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springVersion"
-    implementation "org.springframework.boot:spring-boot-starter-amqp:$springVersion"
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
 
-    compileOnly "org.apache.commons:commons-lang3:$apacheCommonsVersion"
-    compileOnly "org.projectlombok:lombok:$lombokVersion"
+//    annotationProcessor 'org.projectlombok:lombok'
 
-    runtimeOnly "com.h2database:h2:$h2Version"
-    // JAX-B dependencies for JDK 9+
-    runtimeOnly "javax.xml.bind:jaxb-api:$jaxbVersion"
-    runtimeOnly "com.sun.xml.bind:jaxb-core:$jaxbVersion"
-    runtimeOnly "com.sun.xml.bind:jaxb-impl:$jaxbVersion"
-    runtimeOnly "javax.activation:activation:$activationVersion"
-
-    testImplementation "org.springframework.boot:spring-boot-starter-test:$springVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testImplementation "com.h2database:h2:$h2Version"
-    testImplementation "org.assertj:assertj-core:$assertJVersion"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.assertj:assertj-core:${assertJVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
 test {
