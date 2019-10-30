@@ -52,7 +52,8 @@ public class User {
       return false;
     }
     User user = (User) o;
-    return alias.equals(user.alias);
+
+    return alias != null && alias.equals(user.alias);
   }
 
   @Override
