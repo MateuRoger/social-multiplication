@@ -2,8 +2,10 @@ package microservices.book.gamification.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import microservices.book.gamification.domain.GameStats;
+import microservices.book.gamification.domain.ScoreCard;
 import microservices.book.gamification.repository.BadgeCardRepository;
 import microservices.book.gamification.repository.ScoreCardRepository;
 import org.assertj.core.util.Lists;
@@ -36,15 +38,15 @@ class GameServiceImplTest {
   @DisplayName("Given an existing user and an incorrect attempt, when processing the attempt, then the user has the same score than before")
   void givenExistingUserAndInCorrectAttempt_whenProcessing_thenUserDoesNotIncreaseScore() {
     // given
-    long userId = 1L;
-    long attemptId = 10L;
-    int currentScore = 10;
-    GameStats expectedGameStats = new GameStats(userId, currentScore, Lists.emptyList());
+    final long userId = 1L;
+    final long attemptId = 10L;
 
-    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(currentScore);
+    final GameStats expectedGameStats = new GameStats(userId, 10, Lists.emptyList());
+
+    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(10);
 
     // when
-    GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
+    final GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, false);
 
     // then
     assertThat(obtainedGameStats).isEqualTo(expectedGameStats);
@@ -53,16 +55,37 @@ class GameServiceImplTest {
   @Test
   @Tag("Unit")
   @DisplayName("Given an existing user and a correct attempt, when processing the attempt, then the user has 10 points more than before")
-  void givenExistingUserAndCorrectAttempt_whenProcessing_thenUserIncreaseScore() {
+  void givenExistingUserAndCorrectAttempt_whenProcessing_thenUserIncreasesScore() {
     // given
-    long userId = 1L;
-    long attemptId = 10L;
-    GameStats expectedGameStats = new GameStats(userId, 20, Lists.emptyList());
+    final long userId = 1L;
+    final long attemptId = 10L;
+    final GameStats expectedGameStats = new GameStats(userId, 20, Lists.emptyList());
+
+    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(10);
 
     // when
-    GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
+    final GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
     assertThat(obtainedGameStats).isEqualTo(expectedGameStats);
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given an existing user and a correct attempt, when processing the attempt, then new score is stored")
+  void givenExistingUserAndCorrectAttempt_whenProcessing_thenNewScoreIsStored() {
+    // given
+    final long userId = 1L;
+    final long attemptId = 10L;
+    final ScoreCard expectedScoreCard = new ScoreCard(userId, attemptId);
+
+    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(10);
+
+    // when
+    this.gameService.newAttemptForUser(userId, attemptId, true);
+
+    // then
+    verify(scoreCardRepository).getTotalScoreForUser(userId);
+    verify(scoreCardRepository).save(expectedScoreCard);
   }
 }

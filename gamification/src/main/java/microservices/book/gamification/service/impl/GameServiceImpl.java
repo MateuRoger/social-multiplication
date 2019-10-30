@@ -3,6 +3,7 @@ package microservices.book.gamification.service.impl;
 import java.util.stream.Collectors;
 import microservices.book.gamification.domain.BadgeCard;
 import microservices.book.gamification.domain.GameStats;
+import microservices.book.gamification.domain.ScoreCard;
 import microservices.book.gamification.repository.BadgeCardRepository;
 import microservices.book.gamification.repository.ScoreCardRepository;
 import microservices.book.gamification.service.GameService;
@@ -23,7 +24,15 @@ public class GameServiceImpl implements GameService {
 
   @Override
   public GameStats newAttemptForUser(Long userId, Long attemptId, boolean correct) {
-    return new GameStats(userId, this.scoreCardRepository.getTotalScoreForUser(userId),
+    int totalScoreForUser = this.scoreCardRepository.getTotalScoreForUser(userId);
+
+    if (correct) {
+      totalScoreForUser += ScoreCard.DEFAULT_SCORE;
+      this.scoreCardRepository.save(
+          new ScoreCard(userId, attemptId, totalScoreForUser));
+    }
+
+    return new GameStats(userId, totalScoreForUser,
         this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId).stream()
             .map(BadgeCard::getBadge).collect(
             Collectors.toList()));
