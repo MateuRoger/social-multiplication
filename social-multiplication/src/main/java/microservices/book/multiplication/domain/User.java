@@ -6,10 +6,18 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * Stores information to identify the user.
  */
+@RequiredArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
 @Entity
 public class User {
 
@@ -24,48 +32,5 @@ public class User {
    */
   protected User() {
     alias = null;
-  }
-
-  /**
-   * Parametrized Constructor
-   *
-   * @param alias the user's alias
-   */
-  public User(String alias) {
-    this.alias = alias;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public String getAlias() {
-    return alias;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    User user = (User) o;
-
-    return alias != null && alias.equals(user.alias);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(alias);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
-        .add("id=" + id)
-        .add("alias='" + alias + "'")
-        .toString();
   }
 }
