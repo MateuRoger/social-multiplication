@@ -1,10 +1,11 @@
-package microservices.book.multiplication.service;
+package microservices.book.multiplication.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import microservices.book.multiplication.service.RandomGeneratorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;

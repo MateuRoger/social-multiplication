@@ -1,4 +1,4 @@
-package microservices.book.multiplication.service;
+package microservices.book.multiplication.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +11,8 @@ import microservices.book.multiplication.event.MultiplicationSolvedEvent;
 import microservices.book.multiplication.repository.MultiplicationRepository;
 import microservices.book.multiplication.repository.MultiplicationResultAttemptRepository;
 import microservices.book.multiplication.repository.UserRepository;
+import microservices.book.multiplication.service.MultiplicationService;
+import microservices.book.multiplication.service.RandomGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;

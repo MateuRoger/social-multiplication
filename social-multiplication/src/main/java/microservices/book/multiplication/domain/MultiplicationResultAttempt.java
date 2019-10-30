@@ -1,7 +1,5 @@
 package microservices.book.multiplication.domain;
 
-import java.util.Objects;
-import java.util.StringJoiner;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
