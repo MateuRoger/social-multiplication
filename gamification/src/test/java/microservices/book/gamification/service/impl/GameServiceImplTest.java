@@ -2,8 +2,13 @@ package microservices.book.gamification.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.List;
+import microservices.book.gamification.domain.Badge;
+import microservices.book.gamification.domain.BadgeCard;
 import microservices.book.gamification.domain.GameStats;
 import microservices.book.gamification.domain.ScoreCard;
 import microservices.book.gamification.repository.BadgeCardRepository;
@@ -13,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -35,8 +41,8 @@ class GameServiceImplTest {
 
   @Test
   @Tag("Unit")
-  @DisplayName("Given an existing user and an incorrect attempt, when processing the attempt, then the user has the same score than before")
-  void givenExistingUserAndInCorrectAttempt_whenProcessing_thenUserDoesNotIncreaseScore() {
+  @DisplayName("Given an existing user and an incorrect attempt, when new attempt for user, then the user has the same score than before and store it")
+  void givenExistingUserAndInCorrectAttempt_whenNewAttemptForUser_thenUserDoesNotIncreaseScoreAndStoreIt() {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
@@ -46,22 +52,25 @@ class GameServiceImplTest {
     given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(10);
 
     // when
-    final GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, false);
+    final GameStats obtainedGameStats = this.gameService
+        .newAttemptForUser(userId, attemptId, false);
 
     // then
     assertThat(obtainedGameStats).isEqualTo(expectedGameStats);
+    ArgumentCaptor<ScoreCard> scoreCardCaptor = ArgumentCaptor.forClass(ScoreCard.class);
+    verify(scoreCardRepository, never()).save(scoreCardCaptor.capture());
   }
 
   @Test
   @Tag("Unit")
-  @DisplayName("Given an existing user and a correct attempt, when processing the attempt, then the user has 10 points more than before")
-  void givenExistingUserAndCorrectAttempt_whenProcessing_thenUserIncreasesScore() {
+  @DisplayName("Given an existing user and a correct attempt, when new attempt for user, then the user has 10 points more than before")
+  void givenExistingUserAndCorrectAttempt_whenNewAttemptForUser_thenUserIncreasesScore() {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
     final GameStats expectedGameStats = new GameStats(userId, 20, Lists.emptyList());
 
-    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(10);
+    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(20);
 
     // when
     final GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
@@ -72,8 +81,8 @@ class GameServiceImplTest {
 
   @Test
   @Tag("Unit")
-  @DisplayName("Given an existing user and a correct attempt, when processing the attempt, then new score is stored")
-  void givenExistingUserAndCorrectAttempt_whenProcessing_thenNewScoreIsStored() {
+  @DisplayName("Given an existing user and a correct attempt, when new attempt for user, then new score is stored")
+  void givenExistingUserAndCorrectAttempt_whenNewAttemptForUser_thenNewScoreIsStored() {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
@@ -85,7 +94,55 @@ class GameServiceImplTest {
     this.gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    verify(scoreCardRepository).getTotalScoreForUser(userId);
-    verify(scoreCardRepository).save(expectedScoreCard);
+    ArgumentCaptor<ScoreCard> scoreCardCaptor = ArgumentCaptor.forClass(ScoreCard.class);
+    verify(scoreCardRepository).save(scoreCardCaptor.capture());
+    assertThat(scoreCardCaptor.getValue().getScore()).isEqualTo(expectedScoreCard.getScore());
   }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given a new user and a correct attempt, when new attempt for user, then receives the FIRST_WON badge")
+  void given_ExistingUserAndIncorrectAttempt_whenNewAttemptForUser_thenReceiveFIRST_WONBadge() {
+    // given
+    final long userId = 1L;
+    final long attemptId = 10L;
+    final GameStats expectedGameStats = new GameStats(userId, 10, List.of(Badge.FIRST_WON));
+
+    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(10);
+
+    given(scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId))
+        .willReturn(List.of(new ScoreCard(userId, attemptId)));
+    given(badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId))
+        .willReturn(new ArrayList<>());
+
+    // when
+    GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
+
+    // then
+    assertThat(obtainedGameStats).isEqualTo(expectedGameStats);
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given a user having 100 points but doesn't have the BRONZE_MULTIPLICATOR badge, when new attempt for user, then receives the BRONZE_MULTIPLICATOR badge")
+  void given_UserHaving100PointsButNotBRONZE_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveBRONZE_MULTIPLICATOR() {
+    // given
+    final long userId = 1L;
+    final long attemptId = 10L;
+    final GameStats expectedGameStats = new GameStats(userId, 10, List.of(Badge.FIRST_WON, Badge.BRONZE_MULTIPLICATOR));
+
+    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(100);
+
+    given(scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId))
+        .willReturn(List.of(new ScoreCard(userId, attemptId)));
+    given(badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId))
+        .willReturn(new ArrayList<Badge>(){new BadgeCard(userId, Badge.FIRST_WON)});
+
+    // when
+    GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
+
+    // then
+    assertThat(obtainedGameStats).isEqualTo(expectedGameStats);
+  }
+
 }

@@ -49,7 +49,4 @@ public final class ScoreCard {
     this(null, userId, attemptId, System.currentTimeMillis(), DEFAULT_SCORE);
   }
 
-  public ScoreCard(Long userId, Long attemptId, int totalScoreForUser) {
-    this(null, userId, attemptId, System.currentTimeMillis(), totalScoreForUser);
-  }
 }
