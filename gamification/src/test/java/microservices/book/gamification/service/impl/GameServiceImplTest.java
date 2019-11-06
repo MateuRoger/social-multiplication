@@ -136,7 +136,7 @@ class GameServiceImplTest {
     given(scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId))
         .willReturn(List.of(new ScoreCard(userId, attemptId)));
     given(badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId))
-        .willReturn(new ArrayList<Badge>(){new BadgeCard(userId, Badge.FIRST_WON)});
+        .willReturn(List.of(new BadgeCard(userId, Badge.FIRST_WON)));
 
     // when
     GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);

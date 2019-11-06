@@ -1,5 +1,6 @@
 package microservices.book.gamification.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import microservices.book.gamification.domain.Badge;
@@ -33,7 +34,7 @@ public class GameServiceImpl implements GameService {
 
     final int totalScoreForUser = this.scoreCardRepository.getTotalScoreForUser(userId);
 
-    final List<BadgeCard> badgeCardList = calculatesBadgesByScores(userId,
+    final List<BadgeCard> badgeCardList = calculatesBadges(userId,
         totalScoreForUser);
 
     return new GameStats(userId,
@@ -44,29 +45,21 @@ public class GameServiceImpl implements GameService {
   }
 
   /**
-   * Calculates the {@link BadgeCard}s in order of its {@link ScoreCard}.
-   * <p>
-   * If any {@link Badge} has already been added previously, it aren't going to be added.
-   * </p>
+   * Calculates all the {@link BadgeCard}s that have the user.
    *
    * @param userId            the user's id
    * @param totalScoreForUser the total score of the given user
    * @return a {@link BadgeCard} list with all {@link Badge} that have the given user.
    */
-  private List<BadgeCard> calculatesBadgesByScores(Long userId,
+  private List<BadgeCard> calculatesBadges(Long userId,
       int totalScoreForUser) {
     final var scoreCardList = this.scoreCardRepository
         .findByUserIdOrderByScoreTimestampDesc(userId);
     final var badgeCardList = this.badgeCardRepository
         .findByUserIdOrderByBadgeTimestampDesc(userId);
 
-    if (isFirstWon(scoreCardList, badgeCardList)) {
-      badgeCardList.add(storesBadgeCard(userId, Badge.FIRST_WON));
-    }
-
-    if (totalScoreForUser > 99) {
-      badgeCardList.add(storesBadgeCard(userId, Badge.BRONZE_MULTIPLICATOR));
-    }
+    badgeCardList.addAll(processFirstWonBadge(userId, scoreCardList, badgeCardList));
+    badgeCardList.addAll(processScoreBasedBadges(userId, totalScoreForUser, badgeCardList));
 
     return badgeCardList;
   }
@@ -85,15 +78,60 @@ public class GameServiceImpl implements GameService {
   }
 
   /**
-   * Determine whether the FIRST_WON {@link Badge} has been added or not.
+   * Process the FIRST_WON {@link Badge}.
+   * </p>
+   * If the {@link Badge} is not added yet, It will be returned as a list of {@link BadgeCard}
    *
+   * @param userId        the user Id
    * @param scoreCardList the current {@link ScoreCard} list.
    * @param badgeCardList the current {@link BadgeCard} list.
    * @return true if it is the first time the user wins.
    */
-  private boolean isFirstWon(List<ScoreCard> scoreCardList, List<BadgeCard> badgeCardList) {
-    return scoreCardList.size() == 1 && badgeCardList.stream()
-        .noneMatch(badge -> badge.getBadge().equals(Badge.FIRST_WON));
+  private List<BadgeCard> processFirstWonBadge(Long userId, List<ScoreCard> scoreCardList,
+      List<BadgeCard> badgeCardList) {
+
+    List<BadgeCard> newBadgeCards = Collections.emptyList();
+
+    if (scoreCardList.size() == 1 && notContainsBadge(badgeCardList, Badge.FIRST_WON)) {
+      BadgeCard newBadge = storesBadgeCard(userId, Badge.FIRST_WON);
+      newBadgeCards = List.of(newBadge);
+    }
+
+    return newBadgeCards;
+  }
+
+  /**
+   * Process all {@link Badge} that are based on the score obtained.
+   *
+   * @param userId        the user id.
+   * @param currentScore  the current score of the user.
+   * @param badgeCardList the current {@link Badge} of the user.
+   * @return a {@link BadgeCard} list with the new obtained {@link Badge}.
+   */
+  private List<BadgeCard> processScoreBasedBadges(Long userId, int currentScore,
+      List<BadgeCard> badgeCardList) {
+
+    return badgeCardList.stream()
+        .map(BadgeCard::getBadge)
+        .filter(badge -> notContainsBadge(badgeCardList, badge))
+        .filter(badge -> badge.getMinScoreToGet() != null)
+        .filter(badge -> currentScore >= badge.getMinScoreToGet())
+        .map(badge -> storesBadgeCard(userId, badge))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Determines if the given {@code badgeToCheck} exist or not into the given {@link BadgeCard}
+   * list.
+   *
+   * @param badgeCardList the current {@link BadgeCard} list of the user.
+   * @param badgeToCheck  the {@link Badge} to be checked.
+   * @return true if the given {@code badgeToCheck} does not exist into the given {@code
+   * badgeCardList}.
+   */
+  private boolean notContainsBadge(List<BadgeCard> badgeCardList, Badge badgeToCheck) {
+    return badgeCardList.stream()
+        .noneMatch(badge -> badge.getBadge().equals(badgeToCheck));
   }
 
 
