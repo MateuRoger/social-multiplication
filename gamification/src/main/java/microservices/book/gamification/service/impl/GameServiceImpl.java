@@ -1,5 +1,6 @@
 package microservices.book.gamification.service.impl;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,8 +18,7 @@ public class GameServiceImpl implements GameService {
   private final ScoreCardRepository scoreCardRepository;
   private final BadgeCardRepository badgeCardRepository;
 
-  public GameServiceImpl(ScoreCardRepository scoreCardRepository,
-      BadgeCardRepository badgeCardRepository) {
+  public GameServiceImpl(final ScoreCardRepository scoreCardRepository, final BadgeCardRepository badgeCardRepository) {
     this.scoreCardRepository = scoreCardRepository;
     this.badgeCardRepository = badgeCardRepository;
   }
@@ -26,22 +26,17 @@ public class GameServiceImpl implements GameService {
   @Autowired
 
   @Override
-  public GameStats newAttemptForUser(Long userId, Long attemptId, boolean correct) {
+  public GameStats newAttemptForUser(final Long userId, final Long attemptId, final boolean correct) {
     if (correct) {
       this.scoreCardRepository.save(new ScoreCard(userId, attemptId));
     }
-    final Badge badgeToGive = Badge.FIRST_WON;
 
     final int totalScoreForUser = this.scoreCardRepository.getTotalScoreForUser(userId);
 
-    final List<BadgeCard> badgeCardList = calculatesBadges(userId,
-        totalScoreForUser);
+    final List<BadgeCard> badgeCardList = calculatesBadges(userId, totalScoreForUser);
 
-    return new GameStats(userId,
-        totalScoreForUser,
-        badgeCardList.stream()
-            .map(BadgeCard::getBadge).collect(
-            Collectors.toList()));
+    return new GameStats(userId, totalScoreForUser,
+        badgeCardList.stream().map(BadgeCard::getBadge).collect(Collectors.toList()));
   }
 
   /**
@@ -51,12 +46,9 @@ public class GameServiceImpl implements GameService {
    * @param totalScoreForUser the total score of the given user
    * @return a {@link BadgeCard} list with all {@link Badge} that have the given user.
    */
-  private List<BadgeCard> calculatesBadges(Long userId,
-      int totalScoreForUser) {
-    final var scoreCardList = this.scoreCardRepository
-        .findByUserIdOrderByScoreTimestampDesc(userId);
-    final var badgeCardList = this.badgeCardRepository
-        .findByUserIdOrderByBadgeTimestampDesc(userId);
+  private List<BadgeCard> calculatesBadges(final Long userId, final int totalScoreForUser) {
+    final var scoreCardList = this.scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId);
+    final var badgeCardList = this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId);
 
     badgeCardList.addAll(processFirstWonBadge(userId, scoreCardList, badgeCardList));
     badgeCardList.addAll(processScoreBasedBadges(userId, totalScoreForUser, badgeCardList));
@@ -71,10 +63,8 @@ public class GameServiceImpl implements GameService {
    * @param badgeToAdd the {@link Badge} to be added.
    * @return the {@link BadgeCard} stored;
    */
-  private BadgeCard storesBadgeCard(Long userId, Badge badgeToAdd) {
-    BadgeCard badgeCardToGive = new BadgeCard(userId, badgeToAdd);
-    this.badgeCardRepository.save(badgeCardToGive);
-    return badgeCardToGive;
+  private BadgeCard storesBadgeCard(final Long userId, final Badge badgeToAdd) {
+    return this.badgeCardRepository.save(new BadgeCard(userId, badgeToAdd));
   }
 
   /**
@@ -87,14 +77,13 @@ public class GameServiceImpl implements GameService {
    * @param badgeCardList the current {@link BadgeCard} list.
    * @return true if it is the first time the user wins.
    */
-  private List<BadgeCard> processFirstWonBadge(Long userId, List<ScoreCard> scoreCardList,
-      List<BadgeCard> badgeCardList) {
+  private List<BadgeCard> processFirstWonBadge(final Long userId, final List<ScoreCard> scoreCardList,
+      final List<BadgeCard> badgeCardList) {
 
     List<BadgeCard> newBadgeCards = Collections.emptyList();
 
     if (scoreCardList.size() == 1 && notContainsBadge(badgeCardList, Badge.FIRST_WON)) {
-      BadgeCard newBadge = storesBadgeCard(userId, Badge.FIRST_WON);
-      newBadgeCards = List.of(newBadge);
+      newBadgeCards = List.of(storesBadgeCard(userId, Badge.FIRST_WON));
     }
 
     return newBadgeCards;
@@ -108,35 +97,30 @@ public class GameServiceImpl implements GameService {
    * @param badgeCardList the current {@link Badge} of the user.
    * @return a {@link BadgeCard} list with the new obtained {@link Badge}.
    */
-  private List<BadgeCard> processScoreBasedBadges(Long userId, int currentScore,
-      List<BadgeCard> badgeCardList) {
-
-    return badgeCardList.stream()
-        .map(BadgeCard::getBadge)
-        .filter(badge -> notContainsBadge(badgeCardList, badge))
+  private List<BadgeCard> processScoreBasedBadges(final Long userId, final int currentScore, final List<BadgeCard> badgeCardList) {
+    return Arrays.stream(Badge.values())
         .filter(badge -> badge.getMinScoreToGet() != null)
+        .filter(badge -> notContainsBadge(badgeCardList, badge))
         .filter(badge -> currentScore >= badge.getMinScoreToGet())
         .map(badge -> storesBadgeCard(userId, badge))
         .collect(Collectors.toList());
   }
 
   /**
-   * Determines if the given {@code badgeToCheck} exist or not into the given {@link BadgeCard}
-   * list.
+   * Determines if the given {@code badgeToCheck} exist or not into the given {@link BadgeCard} list.
    *
    * @param badgeCardList the current {@link BadgeCard} list of the user.
    * @param badgeToCheck  the {@link Badge} to be checked.
-   * @return true if the given {@code badgeToCheck} does not exist into the given {@code
-   * badgeCardList}.
+   * @return true if the given {@code badgeToCheck} does not exist into the given {@code badgeCardList}.
    */
-  private boolean notContainsBadge(List<BadgeCard> badgeCardList, Badge badgeToCheck) {
+  private boolean notContainsBadge(final List<BadgeCard> badgeCardList, final Badge badgeToCheck) {
     return badgeCardList.stream()
         .noneMatch(badge -> badge.getBadge().equals(badgeToCheck));
   }
 
 
   @Override
-  public GameStats retrieveStatsForUser(Long userId) {
+  public GameStats retrieveStatsForUser(final Long userId) {
     return null;
   }
 }

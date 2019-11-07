@@ -13,8 +13,7 @@ import lombok.ToString;
  * <p>
  * It may contain any combination of {@link ScoreCard} objects and {@link BadgeCard} objects.
  * </p> <p>
- * It can be used as a delta (as a single game iterations) or to represent the total amount of score
- * / badges.
+ * It can be used as a delta (as a single game iterations) or to represent the total amount of score / badges.
  * </p>
  */
 @RequiredArgsConstructor

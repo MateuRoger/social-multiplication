@@ -15,7 +15,7 @@ public interface GameService {
    * @param correct   indicates if the attempt was correct
    * @return a {@link GameStats} object containing the new score and badge cards obtained
    */
-  GameStats newAttemptForUser(Long userId, Long attemptId, boolean correct);
+  GameStats newAttemptForUser(final Long userId, final Long attemptId, final boolean correct);
 
   /**
    * Gets the game statistics for a given user
@@ -23,5 +23,5 @@ public interface GameService {
    * @param userId the user
    * @return the total statistics for that user
    */
-  GameStats retrieveStatsForUser(Long userId);
+  GameStats retrieveStatsForUser(final Long userId);
 }

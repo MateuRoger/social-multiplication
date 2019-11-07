@@ -5,8 +5,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import microservices.book.gamification.domain.Badge;
 import microservices.book.gamification.domain.BadgeCard;
 import microservices.book.gamification.domain.GameStats;
@@ -57,7 +59,7 @@ class GameServiceImplTest {
 
     // then
     assertThat(obtainedGameStats).isEqualTo(expectedGameStats);
-    ArgumentCaptor<ScoreCard> scoreCardCaptor = ArgumentCaptor.forClass(ScoreCard.class);
+    final ArgumentCaptor<ScoreCard> scoreCardCaptor = ArgumentCaptor.forClass(ScoreCard.class);
     verify(scoreCardRepository, never()).save(scoreCardCaptor.capture());
   }
 
@@ -106,20 +108,18 @@ class GameServiceImplTest {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
-    final GameStats expectedGameStats = new GameStats(userId, 10, List.of(Badge.FIRST_WON));
+    final int currentScore = 10;
 
-    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(10);
+    final Badge expectedBadge = Badge.FIRST_WON;
 
-    given(scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId))
-        .willReturn(List.of(new ScoreCard(userId, attemptId)));
-    given(badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId))
-        .willReturn(new ArrayList<>());
+    givenCommonForCalculationBadges(Collections.emptyList(), currentScore,
+        new BadgeCard(userId, expectedBadge));
 
     // when
-    GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
+    final GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    assertThat(obtainedGameStats).isEqualTo(expectedGameStats);
+    assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore, List.of(expectedBadge)));
   }
 
   @Test
@@ -129,20 +129,93 @@ class GameServiceImplTest {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
-    final GameStats expectedGameStats = new GameStats(userId, 10, List.of(Badge.FIRST_WON, Badge.BRONZE_MULTIPLICATOR));
+    final List<Badge> currentBadgeList = List.of(Badge.FIRST_WON);
 
-    given(scoreCardRepository.getTotalScoreForUser(userId)).willReturn(100);
-
-    given(scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId))
-        .willReturn(List.of(new ScoreCard(userId, attemptId)));
-    given(badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId))
-        .willReturn(List.of(new BadgeCard(userId, Badge.FIRST_WON)));
+    final BadgeCard expectedNewBadgeCard = new BadgeCard(userId, Badge.BRONZE_MULTIPLICATOR);
+    final int currentScore = 100;
+    givenCommonForCalculationBadges(currentBadgeList, currentScore, expectedNewBadgeCard);
 
     // when
-    GameStats obtainedGameStats = this.gameService.newAttemptForUser(userId, attemptId, true);
+    final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    assertThat(obtainedGameStats).isEqualTo(expectedGameStats);
+    final List<Badge> expectedBadgeCardList = Stream
+        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
+        .collect(Collectors.toList());
+    assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
+        expectedBadgeCardList));
   }
 
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given a user having 500 points but doesn't have the SILVER_MULTIPLICATOR badge, when new attempt for user, then receives the SILVER_MULTIPLICATOR badge")
+  void given_UserHaving500PointsButNotSILVER_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveSILVER_MULTIPLICATOR() {
+    // given
+    final long userId = 1L;
+    final long attemptId = 10L;
+    final List<Badge> currentBadgeList = List.of(Badge.FIRST_WON, Badge.BRONZE_MULTIPLICATOR);
+
+    final BadgeCard expectedNewBadgeCard = new BadgeCard(userId, Badge.SILVER_MULTIPLICATOR);
+    final int currentScore = 500;
+
+    givenCommonForCalculationBadges(currentBadgeList, currentScore, expectedNewBadgeCard);
+
+    // when
+    final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
+
+    // then
+    final List<Badge> expectedBadgeCardList = Stream
+        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
+        .collect(Collectors.toList());
+    assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
+        expectedBadgeCardList));
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given a user having 100 points but doesn't have the SILVER_MULTIPLICATOR badge, when new attempt for user, then receives the SILVER_MULTIPLICATOR badge")
+  void given_UserHaving500PointsButNotGOLD_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveGOLD_MULTIPLICATOR() {
+    // given
+    final long userId = 1L;
+    final long attemptId = 10L;
+    final List<Badge> currentBadgeList = List
+        .of(Badge.FIRST_WON, Badge.BRONZE_MULTIPLICATOR, Badge.SILVER_MULTIPLICATOR);
+
+    final BadgeCard expectedNewBadgeCard = new BadgeCard(userId, Badge.GOLD_MULTIPLICATOR);
+    final int currentScore = 999;
+    givenCommonForCalculationBadges(currentBadgeList, currentScore, expectedNewBadgeCard);
+
+    // when
+    GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
+
+    // then
+    final List<Badge> expectedBadgeCardList = Stream
+        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
+        .collect(Collectors.toList());
+    assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
+        expectedBadgeCardList));
+  }
+
+  /**
+   * Given common part for all test that verify obtaining the {@link BadgeCard} by {@link ScoreCard}.
+   *
+   * @param currentBadgeList     the current {@link Badge} list of the user.
+   * @param currentScore         the current total score of the user.
+   * @param expectedNewBadgeCard the expected new {@link BadgeCard} that the user must to obtain.
+   */
+  private void givenCommonForCalculationBadges(final List<Badge> currentBadgeList, final int currentScore,
+      final BadgeCard expectedNewBadgeCard) {
+    given(scoreCardRepository.getTotalScoreForUser((long) 1)).willReturn(currentScore);
+
+    given(scoreCardRepository.findByUserIdOrderByScoreTimestampDesc((long) 1))
+        .willReturn(List.of(new ScoreCard((long) 1, (long) 10)));
+
+    given(badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc((long) 1))
+        .willReturn(
+            currentBadgeList.stream()
+                .map(badge -> new BadgeCard((long) 1, badge))
+                .collect(Collectors.toList()));
+
+    given(badgeCardRepository.save(expectedNewBadgeCard)).willReturn(expectedNewBadgeCard);
+  }
 }

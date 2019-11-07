@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * This class represents the Score linked to an attempt in the game, with an associated user and the
- * timestamp in witch the score is registered
+ * This class represents the Score linked to an attempt in the game, with an associated user and the timestamp in witch
+ * the score is registered
  */
 @RequiredArgsConstructor
 @Getter

@@ -1,8 +1,8 @@
 package microservices.book.gamification.repository;
 
 import java.util.List;
-import microservices.book.gamification.domain.ScoreCard;
 import microservices.book.gamification.domain.LeaderBoardRow;
+import microservices.book.gamification.domain.ScoreCard;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -25,8 +25,7 @@ public interface ScoreCardRepository extends CrudRepository<ScoreCard, Long> {
   int getTotalScoreForUser(@Param("userId") final Long userId);
 
   /**
-   * Retrieves a list of {@link LeaderBoardRow}s representing the Leader Board of users and their
-   * total score.
+   * Retrieves a list of {@link LeaderBoardRow}s representing the Leader Board of users and their total score.
    *
    * @return the leader board, sorted by highest score first.
    */

@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * This class links a {@link Badge} to a User. Contains also a timestamp with the moment in witch
- * the user got it.
+ * This class links a {@link Badge} to a User. Contains also a timestamp with the moment in witch the user got it.
  */
 @RequiredArgsConstructor
 @Getter
@@ -26,6 +25,7 @@ public final class BadgeCard {
   private final Long badgedId;
 
   private final Long userId;
+  @EqualsAndHashCode.Exclude
   private final long badgeTimestamp;
   private final Badge badge;
 
