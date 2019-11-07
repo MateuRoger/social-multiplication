@@ -40,7 +40,7 @@ class MultiplicationResultAttemptControllerTest {
   private JacksonTester<List<MultiplicationResultAttempt>> jsonResultAttemptList;
 
   @BeforeEach
-  void setup() {
+  void setUp() {
     JacksonTester.initFields(this, new ObjectMapper());
   }
 
@@ -112,7 +112,6 @@ class MultiplicationResultAttemptControllerTest {
         .andReturn().getResponse();
 
     // then
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     assertThat(response.getContentAsString()).isEqualTo(
         jsonResultAttemptList.write(
             recentAttempts

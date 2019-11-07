@@ -45,7 +45,7 @@ public final class ScoreCard {
     this(null, null, null, 0, 0);
   }
 
-  public ScoreCard(Long userId, Long attemptId) {
+  public ScoreCard(final Long userId, final Long attemptId) {
     this(null, userId, attemptId, System.currentTimeMillis(), DEFAULT_SCORE);
   }
 

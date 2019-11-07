@@ -25,7 +25,7 @@ final class MultiplicationResultAttemptController {
 
   @PostMapping
   public ResponseEntity<MultiplicationResultAttempt> postResult(
-      @RequestBody MultiplicationResultAttempt multiplicationResultAttempt) {
+      final @RequestBody MultiplicationResultAttempt multiplicationResultAttempt) {
     return ResponseEntity.ok(new MultiplicationResultAttempt(
         multiplicationResultAttempt.getUser(),
         multiplicationResultAttempt.getMultiplication(),
@@ -35,7 +35,7 @@ final class MultiplicationResultAttemptController {
 
   @GetMapping
   public ResponseEntity<List<MultiplicationResultAttempt>> getStatistics(
-      @RequestParam("alias") String alias) {
+      final @RequestParam("alias") String alias) {
     return ResponseEntity.ok(multiplicationService.getStatsForUser(alias));
   }
 }

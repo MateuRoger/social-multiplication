@@ -52,7 +52,6 @@ class MultiplicationControllerTest {
         .andReturn().getResponse();
 
     //Then
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
     assertThat(response.getContentAsString())
         .isEqualTo(json.write(new Multiplication(70, 20))
             .getJson());

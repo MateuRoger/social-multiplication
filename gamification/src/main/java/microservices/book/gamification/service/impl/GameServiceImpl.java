@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class GameServiceImpl implements GameService {
 
   private final ScoreCardRepository scoreCardRepository;
-  private final BadgeCardRepository badgeCardRepository;
+  private final BadgeCardRepository badgeCardRepository;//NOPMD
 
   public GameServiceImpl(final ScoreCardRepository scoreCardRepository, final BadgeCardRepository badgeCardRepository) {
     this.scoreCardRepository = scoreCardRepository;

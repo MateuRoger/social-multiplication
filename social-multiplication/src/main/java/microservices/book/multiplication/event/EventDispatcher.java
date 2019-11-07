@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventDispatcher {
 
-  private RabbitTemplate rabbitTemplate;
+  private final RabbitTemplate rabbitTemplate;
 
   // The exchange to use to send anything related to Multiplication
-  private String multiplicationExchange;
+  private final String multiplicationExchange;
 
   // The routing key to use to send this particular event
-  private String multiplicationSolvedRoutingKey;
+  private final String multiplicationSolvedRoutingKey;
 
   /**
    * Parametrized constructor

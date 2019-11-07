@@ -28,11 +28,11 @@ public class MultiplicationServiceImpl implements MultiplicationService {
 
   @Autowired
   public MultiplicationServiceImpl(
-      RandomGeneratorService randomGeneratorService,
-      MultiplicationResultAttemptRepository attemptRepository,
-      UserRepository userRepository,
-      MultiplicationRepository multiplicationRepository,
-      EventDispatcher eventDispatcher) {
+      final RandomGeneratorService randomGeneratorService,
+      final MultiplicationResultAttemptRepository attemptRepository,
+      final UserRepository userRepository,
+      final MultiplicationRepository multiplicationRepository,
+      final EventDispatcher eventDispatcher) {
     this.randomGeneratorService = randomGeneratorService;
     this.attemptRepository = attemptRepository;
     this.userRepository = userRepository;
@@ -42,17 +42,16 @@ public class MultiplicationServiceImpl implements MultiplicationService {
 
   @Override
   public Multiplication createRandomMultiplication() {
-    int factorA = randomGeneratorService.generateRandomFactor();
-    int factorB = randomGeneratorService.generateRandomFactor();
-    return new Multiplication(factorA, factorB);
+    return new Multiplication(randomGeneratorService.generateRandomFactor(),
+        randomGeneratorService.generateRandomFactor());
   }
 
   @Transactional
   @Override
   public boolean checkAttempt(final MultiplicationResultAttempt attempt) {
     // Checks if the user already exists for the alias
-    Optional<User> storedUser = userRepository.findByAlias(attempt.getUser().getAlias());
-    Optional<Multiplication> storedMultiplication = multiplicationRepository
+    final Optional<User> storedUser = userRepository.findByAlias(attempt.getUser().getAlias());
+    final Optional<Multiplication> storedMultiplication = multiplicationRepository
         .findByFactorAAndFactorB(
             attempt.getMultiplication().getFactorA(),
             attempt.getMultiplication().getFactorB());
@@ -66,7 +65,7 @@ public class MultiplicationServiceImpl implements MultiplicationService {
         * attempt.getMultiplication().getFactorB();
 
     // Creates a copy, now setting the 'correct' field accordingly
-    MultiplicationResultAttempt checkedAttempt = new MultiplicationResultAttempt(
+    final MultiplicationResultAttempt checkedAttempt = new MultiplicationResultAttempt(
         storedUser.orElse(attempt.getUser()),
         storedMultiplication.orElse(attempt.getMultiplication()), attempt.getResultAttempt(),
         isCorrect);
@@ -84,7 +83,7 @@ public class MultiplicationServiceImpl implements MultiplicationService {
   }
 
   @Override
-  public List<MultiplicationResultAttempt> getStatsForUser(String userAlias) {
+  public List<MultiplicationResultAttempt> getStatsForUser(final String userAlias) {
     return attemptRepository.findTop5ByUserAliasOrderByIdDesc(userAlias);
   }
 }
