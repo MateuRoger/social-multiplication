@@ -33,7 +33,7 @@ public class GameServiceImpl implements GameService {
 
     final int totalScoreForUser = this.scoreCardRepository.getTotalScoreForUser(userId);
 
-    final List<BadgeCard> badgeCardList = calculatesBadges(userId, totalScoreForUser);
+    final List<BadgeCard> badgeCardList = processForBadges(userId, totalScoreForUser);
 
     return new GameStats(userId, totalScoreForUser,
         badgeCardList.stream().map(BadgeCard::getBadge).collect(Collectors.toList()));
@@ -46,24 +46,24 @@ public class GameServiceImpl implements GameService {
    * @param totalScoreForUser the total score of the given user
    * @return a {@link BadgeCard} list with all {@link Badge} that have the given user.
    */
-  private List<BadgeCard> calculatesBadges(final Long userId, final int totalScoreForUser) {
+  private List<BadgeCard> processForBadges(final Long userId, final int totalScoreForUser) {
     final var scoreCardList = this.scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId);
     final var badgeCardList = this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId);
 
     badgeCardList.addAll(processFirstWonBadge(userId, scoreCardList, badgeCardList));
-    badgeCardList.addAll(processScoreBasedBadges(userId, totalScoreForUser, badgeCardList));
+    badgeCardList.addAll(processScoreBasedOnScore(userId, totalScoreForUser, badgeCardList));
 
     return badgeCardList;
   }
 
   /**
-   * Stores a {@link BadgeCard} created from the fiven {@code userId} and {@code badgeToAdd}
+   * Give a {@link BadgeCard} created from the given {@code userId} and {@code badgeToAdd} to the user.
    *
    * @param userId     the user's id
    * @param badgeToAdd the {@link Badge} to be added.
    * @return the {@link BadgeCard} stored;
    */
-  private BadgeCard storesBadgeCard(final Long userId, final Badge badgeToAdd) {
+  private BadgeCard giveBadgeCard(final Long userId, final Badge badgeToAdd) {
     return this.badgeCardRepository.save(new BadgeCard(userId, badgeToAdd));
   }
 
@@ -83,7 +83,7 @@ public class GameServiceImpl implements GameService {
     List<BadgeCard> newBadgeCards = Collections.emptyList();
 
     if (scoreCardList.size() == 1 && notContainsBadge(badgeCardList, Badge.FIRST_WON)) {
-      newBadgeCards = List.of(storesBadgeCard(userId, Badge.FIRST_WON));
+      newBadgeCards = List.of(giveBadgeCard(userId, Badge.FIRST_WON));
     }
 
     return newBadgeCards;
@@ -97,12 +97,13 @@ public class GameServiceImpl implements GameService {
    * @param badgeCardList the current {@link Badge} of the user.
    * @return a {@link BadgeCard} list with the new obtained {@link Badge}.
    */
-  private List<BadgeCard> processScoreBasedBadges(final Long userId, final int currentScore, final List<BadgeCard> badgeCardList) {
+  private List<BadgeCard> processScoreBasedOnScore(final Long userId, final int currentScore,
+      final List<BadgeCard> badgeCardList) {
     return Arrays.stream(Badge.values())
         .filter(badge -> badge.getMinScoreToGet() != null)
         .filter(badge -> notContainsBadge(badgeCardList, badge))
         .filter(badge -> currentScore >= badge.getMinScoreToGet())
-        .map(badge -> storesBadgeCard(userId, badge))
+        .map(badge -> giveBadgeCard(userId, badge))
         .collect(Collectors.toList());
   }
 
