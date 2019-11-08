@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import microservices.book.gamification.domain.Badge;
 import microservices.book.gamification.domain.BadgeCard;
 import microservices.book.gamification.domain.GameStats;
@@ -12,7 +13,10 @@ import microservices.book.gamification.repository.BadgeCardRepository;
 import microservices.book.gamification.repository.ScoreCardRepository;
 import microservices.book.gamification.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class GameServiceImpl implements GameService {
 
   private final ScoreCardRepository scoreCardRepository;
@@ -27,15 +31,20 @@ public class GameServiceImpl implements GameService {
 
   @Override
   public GameStats newAttemptForUser(final Long userId, final Long attemptId, final boolean correct) {
+    ScoreCard scoredCard = new ScoreCard();
+
     if (correct) {
-      this.scoreCardRepository.save(new ScoreCard(userId, attemptId));
+      scoredCard = new ScoreCard(userId, attemptId);
+      this.scoreCardRepository.save(scoredCard);
     }
+    log.info("User with id {} scored {} points for attempt id {}", userId, scoredCard.getScore(), attemptId);
 
-    final int totalScoreForUser = this.scoreCardRepository.getTotalScoreForUser(userId);
+    final int totalScore = this.scoreCardRepository.getTotalScoreForUser(userId);
+    log.info("New score for user {} is {}", userId, totalScore);
 
-    final List<BadgeCard> badgeCardList = processForBadges(userId, totalScoreForUser);
+    final List<BadgeCard> badgeCardList = processForBadges(userId, totalScore);
 
-    return new GameStats(userId, totalScoreForUser,
+    return new GameStats(userId, totalScore,
         badgeCardList.stream().map(BadgeCard::getBadge).collect(Collectors.toList()));
   }
 
@@ -64,7 +73,12 @@ public class GameServiceImpl implements GameService {
    * @return the {@link BadgeCard} stored;
    */
   private BadgeCard giveBadgeCard(final Long userId, final Badge badgeToAdd) {
-    return this.badgeCardRepository.save(new BadgeCard(userId, badgeToAdd));
+    final BadgeCard newBadge = new BadgeCard(userId, badgeToAdd);
+    final BadgeCard gaveBadgeCard = this.badgeCardRepository.save(newBadge);
+
+    log.info("User with id {} won a new badge: {}", userId, newBadge);
+
+    return gaveBadgeCard;
   }
 
   /**
