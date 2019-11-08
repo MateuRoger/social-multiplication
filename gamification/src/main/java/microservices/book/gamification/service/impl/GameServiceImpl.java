@@ -22,12 +22,11 @@ public class GameServiceImpl implements GameService {
   private final ScoreCardRepository scoreCardRepository;
   private final BadgeCardRepository badgeCardRepository;//NOPMD
 
+  @Autowired
   public GameServiceImpl(final ScoreCardRepository scoreCardRepository, final BadgeCardRepository badgeCardRepository) {
     this.scoreCardRepository = scoreCardRepository;
     this.badgeCardRepository = badgeCardRepository;
   }
-
-  @Autowired
 
   @Override
   public GameStats newAttemptForUser(final Long userId, final Long attemptId, final boolean correct) {
@@ -136,6 +135,10 @@ public class GameServiceImpl implements GameService {
 
   @Override
   public GameStats retrieveStatsForUser(final Long userId) {
-    return null;
+    return new GameStats(userId,
+        this.scoreCardRepository.getTotalScoreForUser(userId),
+        this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId).stream()
+            .map(BadgeCard::getBadge)
+            .collect(Collectors.toList()));
   }
 }

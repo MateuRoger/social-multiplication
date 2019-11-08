@@ -104,7 +104,7 @@ class GameServiceImplTest {
   @Test
   @Tag("Unit")
   @DisplayName("Given a new user and a correct attempt, when new attempt for user, then receives the FIRST_WON badge")
-  void given_ExistingUserAndIncorrectAttempt_whenNewAttemptForUser_thenReceiveFIRST_WONBadge() {
+  void givenExistingUserAndIncorrectAttempt_whenNewAttemptForUser_thenReceiveFIRST_WONBadge() {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
@@ -125,7 +125,7 @@ class GameServiceImplTest {
   @Test
   @Tag("Unit")
   @DisplayName("Given a user having 100 points but doesn't have the BRONZE_MULTIPLICATOR badge, when new attempt for user, then receives the BRONZE_MULTIPLICATOR badge")
-  void given_UserHaving100PointsButNotBRONZE_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveBRONZE_MULTIPLICATOR() {
+  void givenUserHaving100PointsButNotBRONZE_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveBRONZE_MULTIPLICATOR() {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
@@ -149,7 +149,7 @@ class GameServiceImplTest {
   @Test
   @Tag("Unit")
   @DisplayName("Given a user having 500 points but doesn't have the SILVER_MULTIPLICATOR badge, when new attempt for user, then receives the SILVER_MULTIPLICATOR badge")
-  void given_UserHaving500PointsButNotSILVER_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveSILVER_MULTIPLICATOR() {
+  void givenUserHaving500PointsButNotSILVER_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveSILVER_MULTIPLICATOR() {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
@@ -174,7 +174,7 @@ class GameServiceImplTest {
   @Test
   @Tag("Unit")
   @DisplayName("Given a user having 100 points but doesn't have the SILVER_MULTIPLICATOR badge, when new attempt for user, then receives the SILVER_MULTIPLICATOR badge")
-  void given_UserHaving500PointsButNotGOLD_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveGOLD_MULTIPLICATOR() {
+  void givenUserHaving500PointsButNotGOLD_MULTIPLICATOR_whenNewAttemptForUser_thenReceiveGOLD_MULTIPLICATOR() {
     // given
     final long userId = 1L;
     final long attemptId = 10L;
@@ -217,5 +217,29 @@ class GameServiceImplTest {
                 .collect(Collectors.toList()));
 
     given(badgeCardRepository.save(expectedNewBadgeCard)).willReturn(expectedNewBadgeCard);
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given a user with badgeCards and scoresCards, when retrieveStatsForUser, then returns a gameStats with all his stats")
+  void givenUserWithBadgeCardsAndScoresCards_whenRetrieveStatsForUser_thenReturnsGameStatsWithAllStats() {
+    // given
+    final long userId = 123L;
+    final int currentScore = 345;
+    final List<BadgeCard> currentBadges = List
+        .of(new BadgeCard(userId, Badge.FIRST_WON), new BadgeCard(userId, Badge.BRONZE_MULTIPLICATOR));
+
+    given(this.scoreCardRepository.getTotalScoreForUser(userId)).willReturn(currentScore);
+    given(this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId)).willReturn(
+        currentBadges);
+
+    // when
+    final GameStats currentGameStats = this.gameService.retrieveStatsForUser(userId);
+
+    // then
+    assertThat(currentGameStats)
+        .isEqualTo(new GameStats(userId, currentScore,
+            currentBadges.stream()
+                .map(BadgeCard::getBadge).collect(Collectors.toList())));
   }
 }
