@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.text.html.Option;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
@@ -207,4 +208,23 @@ class MultiplicationServiceImplTest {
 
     return List.of(attempt1, attempt2);
   }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Retrieves a MultiplicationResultAttempt by its id")
+  void retrievesMultiplicationResultAttemptByItsId() {
+    // given
+    final MultiplicationResultAttempt desiredResult = new MultiplicationResultAttempt(
+        new User("john"),
+        new Multiplication(10, 10), 100, true);
+
+    given(this.attemptRepository.findById(10L)).willReturn(Optional.of(desiredResult));
+
+    //When
+    final Optional<MultiplicationResultAttempt> obtainedResult = this.multiplicationService.getResultById(10L);
+
+    //Then
+    assertThat(obtainedResult.orElseThrow(() -> new RuntimeException("this object can not be null"))).isEqualTo(desiredResult);
+  }
+
 }

@@ -13,7 +13,8 @@ public enum Badge {
 
   // Other badges won for different conditions
   FIRST_ATTEMPT(null),
-  FIRST_WON(null);
+  FIRST_WON(null),
+  LUCKY_NUMBER(null);
 
   private final Integer minScoreToGet;
 }

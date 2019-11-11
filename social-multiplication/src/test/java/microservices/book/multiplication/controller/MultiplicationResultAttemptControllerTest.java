@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.Optional;
 import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
@@ -116,5 +117,25 @@ class MultiplicationResultAttemptControllerTest {
         jsonResultAttemptList.write(
             recentAttempts
         ).getJson());
+  }
+
+  @Test
+  @Tag("API-Test")
+  @DisplayName("Retrieves a MultiplicationResultAttempt by its id")
+  void retrievesMultiplicationResultAttemptByItsId() throws Exception {
+    // given
+    final MultiplicationResultAttempt desiredResult = new MultiplicationResultAttempt(
+        new User("john"),
+        new Multiplication(10, 10), 100, true);
+
+    given(this.multiplicationService.getResultById(10L)).willReturn(Optional.of(desiredResult));
+
+    //When
+    MockHttpServletResponse response = mvc.perform(
+        get("/results/10").accept(MediaType.APPLICATION_JSON))
+        .andReturn().getResponse();
+
+    //Then
+    assertThat(response.getContentAsString()).isEqualTo(jsonResult.write(desiredResult).getJson());
   }
 }
