@@ -26,7 +26,7 @@ public class MultiplicationResultAttemptClientImpl implements MultiplicationResu
 
   @Override
   public MultiplicationResultAttempt retrieveMultiplicationResultAttemptById(final Long multiplicationResultAttemptId) {
-    final Optional<MultiplicationResultAttempt> attemptOptional= Optional.ofNullable(restTemplate.getForObject(
+    final Optional<MultiplicationResultAttempt> attemptOptional = Optional.ofNullable(restTemplate.getForObject(
         multiplicationHost + "/results" + multiplicationResultAttemptId, MultiplicationResultAttempt.class));
     return attemptOptional.orElse(new MultiplicationResultAttempt());
 
