@@ -30,7 +30,6 @@ public class GameServiceImpl implements GameService {
   private final BadgeCardRepository badgeCardRepository;
   private final MultiplicationResultAttemptClient resultAttemptClient;
 
-  @Autowired
   public GameServiceImpl(final ScoreCardRepository scoreCardRepository, final BadgeCardRepository badgeCardRepository,
       final MultiplicationResultAttemptClient resultAttemptClient) {
     this.scoreCardRepository = scoreCardRepository;
