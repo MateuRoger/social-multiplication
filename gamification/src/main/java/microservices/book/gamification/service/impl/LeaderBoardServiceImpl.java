@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class LeaderBoardServiceImpl implements LeaderBoardService {
+
   private final ScoreCardRepository scoreCardRepository;
 
   @Autowired

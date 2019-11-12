@@ -33,11 +33,12 @@ class LeaderBoardServiceImplTest {
   @DisplayName("Given users with score in the system, when gets top 10, then returns the top ten descending")
   void givenUsersWithScore_whenGetsTopTen_thenReturnsTopTenDescending() {
     // given
-    final List<LeaderBoardRow> currentLeaderBoardRows = List.of(new LeaderBoardRow(1L, 100L), new LeaderBoardRow(2L, 90L),
-        new LeaderBoardRow(3L, 80L), new LeaderBoardRow(4L, 70L),
-        new LeaderBoardRow(5L, 60L), new LeaderBoardRow(6L, 50L),
-        new LeaderBoardRow(7L, 40L), new LeaderBoardRow(8L, 30L),
-        new LeaderBoardRow(9L, 20L), new LeaderBoardRow(10L, 10L));
+    final List<LeaderBoardRow> currentLeaderBoardRows = List
+        .of(new LeaderBoardRow(1L, 100L), new LeaderBoardRow(2L, 90L),
+            new LeaderBoardRow(3L, 80L), new LeaderBoardRow(4L, 70L),
+            new LeaderBoardRow(5L, 60L), new LeaderBoardRow(6L, 50L),
+            new LeaderBoardRow(7L, 40L), new LeaderBoardRow(8L, 30L),
+            new LeaderBoardRow(9L, 20L), new LeaderBoardRow(10L, 10L));
     given(scoreCardRepository.findFirst10()).willReturn(
         currentLeaderBoardRows);
 

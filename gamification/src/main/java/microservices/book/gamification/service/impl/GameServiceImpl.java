@@ -96,7 +96,7 @@ public class GameServiceImpl implements GameService {
   /**
    * Gets a {@link BadgeOperationExecutor} that will be executes all the {@link ObtainBadgeOperation} for all cases
    *
-   * @param currentScore the user's current score.
+   * @param currentScore  the user's current score.
    * @param scoreCardList the current {@link ScoreCard} list of the user.
    * @param badgeCardList the current {@link BadgeCard} list of the user.
    * @return a {@link BadgeOperationExecutor}

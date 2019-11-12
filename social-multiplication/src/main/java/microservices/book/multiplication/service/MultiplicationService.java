@@ -27,8 +27,7 @@ public interface MultiplicationService {
    * Gets the statistics for a given {@link User}.
    *
    * @param userAlias the user's alias
-   * @return a list of {@link MultiplicationResultAttempt} objects, being the past attempts of the
-   * user.
+   * @return a list of {@link MultiplicationResultAttempt} objects, being the past attempts of the user.
    */
   List<MultiplicationResultAttempt> getStatsForUser(final String userAlias);
 
