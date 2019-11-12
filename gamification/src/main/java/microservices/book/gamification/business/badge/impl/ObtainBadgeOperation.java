@@ -2,7 +2,7 @@ package microservices.book.gamification.business.badge.impl;
 
 import java.util.Optional;
 import microservices.book.gamification.business.badge.BadgeOperation;
-import microservices.book.gamification.business.badge.criteria.BadgeObtainable;
+import microservices.book.gamification.business.badge.criteria.BadgeCriteria;
 import microservices.book.gamification.domain.Badge;
 
 /**
@@ -10,14 +10,14 @@ import microservices.book.gamification.domain.Badge;
  */
 public class ObtainBadgeOperation implements BadgeOperation {
 
-  private BadgeObtainable badgeObtainable;
+  private BadgeCriteria badgeCriteria;
 
-  public ObtainBadgeOperation(BadgeObtainable badgeObtainable) {
-    this.badgeObtainable = badgeObtainable;
+  public ObtainBadgeOperation(BadgeCriteria badgeCriteria) {
+    this.badgeCriteria = badgeCriteria;
   }
 
   @Override
   public Optional<Badge> execute() {
-    return badgeObtainable.obtain();
+    return badgeCriteria.applyCriteria();
   }
 }

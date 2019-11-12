@@ -7,7 +7,7 @@ import microservices.book.gamification.domain.Badge;
  * Provides methods to obtain {@link Badge} according its criteria.
  */
 @FunctionalInterface
-public interface BadgeObtainable {
+public interface BadgeCriteria {
 
-  Optional<Badge> obtain();
+  Optional<Badge> applyCriteria();
 }
