@@ -1,6 +1,5 @@
 package microservices.book.gamification.configuration;
 
-import org.aspectj.weaver.loadtime.DefaultMessageHandler;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -34,12 +33,12 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
   }
 
   @Bean
-  public MappingJackson2MessageConverter consumerJackson2MessageConverter() {
+  private MappingJackson2MessageConverter consumerJackson2MessageConverter() {
     return new MappingJackson2MessageConverter();
   }
 
   @Bean
-  public DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
+  private DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
     final DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
     factory.setMessageConverter(consumerJackson2MessageConverter());
     return factory;

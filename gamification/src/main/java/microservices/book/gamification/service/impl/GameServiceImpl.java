@@ -7,8 +7,11 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import microservices.book.gamification.business.badge.BadgeOperationExecutor;
 import microservices.book.gamification.business.badge.criteria.impl.FirstWonBadgeCriteria;
+import microservices.book.gamification.business.badge.criteria.impl.LuckyNumberCriteria;
 import microservices.book.gamification.business.badge.criteria.impl.ScoredBasedBadgeCriteria;
 import microservices.book.gamification.business.badge.impl.ObtainBadgeOperation;
+import microservices.book.gamification.client.MultiplicationResultAttemptClient;
+import microservices.book.gamification.client.dto.MultiplicationResultAttempt;
 import microservices.book.gamification.domain.Badge;
 import microservices.book.gamification.domain.BadgeCard;
 import microservices.book.gamification.domain.GameStats;
@@ -25,11 +28,14 @@ public class GameServiceImpl implements GameService {
 
   private final ScoreCardRepository scoreCardRepository;
   private final BadgeCardRepository badgeCardRepository;
+  private final MultiplicationResultAttemptClient resultAttemptClient;
 
   @Autowired
-  public GameServiceImpl(final ScoreCardRepository scoreCardRepository, final BadgeCardRepository badgeCardRepository) {
+  public GameServiceImpl(final ScoreCardRepository scoreCardRepository, final BadgeCardRepository badgeCardRepository,
+      final MultiplicationResultAttemptClient resultAttemptClient) {
     this.scoreCardRepository = scoreCardRepository;
     this.badgeCardRepository = badgeCardRepository;
+    this.resultAttemptClient = resultAttemptClient;
   }
 
   @Override
@@ -45,11 +51,10 @@ public class GameServiceImpl implements GameService {
     final int totalScore = this.scoreCardRepository.getTotalScoreForUser(userId);
     log.info("New score for user {} is {}", userId, totalScore);
 
-    final List<BadgeCard> badgeCardList = processNewBadgesByCase(userId, totalScore);
+    final List<BadgeCard> badgeCardList = processNewBadgesByCase(userId, totalScore, attemptId);
 
-    final GameStats gameStats = new GameStats(userId, totalScore,
+    return new GameStats(userId, totalScore,
         badgeCardList.stream().map(BadgeCard::getBadge).collect(Collectors.toList()));
-    return gameStats;
   }
 
   /**
@@ -74,14 +79,15 @@ public class GameServiceImpl implements GameService {
    *
    * @param userId       the user Id
    * @param currentScore the user's current score
+   * @param attemptId    the {@link MultiplicationResultAttempt}'s id
    * @return a list of all the new {@link BadgeCard} that have been stored.
    */
-  private List<BadgeCard> processNewBadgesByCase(final Long userId, int currentScore) {
+  private List<BadgeCard> processNewBadgesByCase(final Long userId, int currentScore, Long attemptId) {
     final var scoreCardList = this.scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId);
     final var badgeCardList = this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId);
 
     final BadgeOperationExecutor badgeOptExecutor = getBadgeOperationExecutor(currentScore, scoreCardList,
-        badgeCardList);
+        badgeCardList, attemptId);
 
     final Set<Badge> newBadges = badgeOptExecutor.executeAllOperations();
 
@@ -99,10 +105,14 @@ public class GameServiceImpl implements GameService {
    * @param currentScore  the user's current score.
    * @param scoreCardList the current {@link ScoreCard} list of the user.
    * @param badgeCardList the current {@link BadgeCard} list of the user.
+   * @param attemptId     the {@link MultiplicationResultAttempt}'s id
    * @return a {@link BadgeOperationExecutor}
    */
   private BadgeOperationExecutor getBadgeOperationExecutor(int currentScore, List<ScoreCard> scoreCardList,
-      List<BadgeCard> badgeCardList) {
+      List<BadgeCard> badgeCardList, Long attemptId) {
+    final MultiplicationResultAttempt attempt = this.resultAttemptClient
+        .retrieveMultiplicationResultAttemptById(attemptId);
+
     final BadgeOperationExecutor badgeOptExecutor = new BadgeOperationExecutor();
 
     badgeOptExecutor.addBadgeOperation(
@@ -114,6 +124,9 @@ public class GameServiceImpl implements GameService {
         new ScoredBasedBadgeCriteria(badgeCardList, 500, currentScore, Badge.SILVER_MULTIPLICATOR)));
     badgeOptExecutor.addBadgeOperation(new ObtainBadgeOperation(
         new ScoredBasedBadgeCriteria(badgeCardList, 999, currentScore, Badge.GOLD_MULTIPLICATOR)));
+
+    badgeOptExecutor.addBadgeOperation(
+        new ObtainBadgeOperation(new LuckyNumberCriteria(badgeCardList, attempt, Badge.LUCKY_NUMBER)));
 
     return badgeOptExecutor;
   }
