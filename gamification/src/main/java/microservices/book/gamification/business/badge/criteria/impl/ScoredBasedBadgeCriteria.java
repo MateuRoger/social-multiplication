@@ -1,9 +1,9 @@
-package microservices.book.gamification.business.badge.cases.impl;
+package microservices.book.gamification.business.badge.criteria.impl;
 
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import microservices.book.gamification.business.badge.cases.BadgeObtainable;
+import microservices.book.gamification.business.badge.criteria.BadgeObtainable;
 import microservices.book.gamification.domain.Badge;
 import microservices.book.gamification.domain.BadgeCard;
 

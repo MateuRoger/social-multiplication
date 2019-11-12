@@ -2,7 +2,7 @@ package microservices.book.gamification.business.badge.impl;
 
 import java.util.Optional;
 import microservices.book.gamification.business.badge.BadgeOperation;
-import microservices.book.gamification.business.badge.cases.BadgeObtainable;
+import microservices.book.gamification.business.badge.criteria.BadgeObtainable;
 import microservices.book.gamification.domain.Badge;
 
 /**
