@@ -15,12 +15,12 @@ public class EventHandler {
 
   private final GameService gameService;
 
-  private EventHandler(final GameService gameService) {
+  EventHandler(final GameService gameService) {
     this.gameService = gameService;
   }
 
   @RabbitListener(queues = "${multiplication.queue}")
-  void handleMultiplicationSoled(final MultiplicationSolvedEvent event) {
+  void handleMultiplicationSolved(final MultiplicationSolvedEvent event) {
     log.info("Multiplication Solved Event received: {}", event.getMultiplicationResultAttemptId());
     try {
       gameService.newAttemptForUser(event.getUserId(), event.getMultiplicationResultAttemptId(), event.isCorrect());

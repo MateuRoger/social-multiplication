@@ -16,7 +16,7 @@ import org.springframework.messaging.handler.annotation.support.DefaultMessageHa
  * Configures RabbitMQ to use events in our application.
  */
 @Configuration
-class RabbitMQConfiguration implements RabbitListenerConfigurer {
+public class RabbitMQConfiguration implements RabbitListenerConfigurer {
 
   /**
    * Creates a the {@link TopicExchange} Bean.
@@ -46,7 +46,7 @@ class RabbitMQConfiguration implements RabbitListenerConfigurer {
    * @return the {@link Binding} Bean.
    */
   @Bean
-  public Binding binding(final Queue queue, final TopicExchange exchange,
+  Binding binding(final Queue queue, final TopicExchange exchange,
       @Value("${multiplication.anything.routing-key}") final String routingKey) {
     return BindingBuilder.bind(queue).to(exchange).with(routingKey);
   }

@@ -2,6 +2,7 @@ package microservices.book.gamification.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class GameServiceImpl implements GameService {
     }
     log.info("User with id {} scored {} points for attempt id {}", userId, scoredCard.getScore(), attemptId);
 
-    final int totalScore = this.scoreCardRepository.getTotalScoreForUser(userId);
+    final int totalScore = Optional.ofNullable(this.scoreCardRepository.getTotalScoreForUser(userId)).orElse(0);
     log.info("New score for user {} is {}", userId, totalScore);
 
     final List<BadgeCard> badgeCardList = processNewBadgesByCase(userId, totalScore, attemptId);
