@@ -10,9 +10,14 @@ import microservices.book.gamification.domain.Badge;
  */
 public class ObtainBadgeOperation implements BadgeOperation {
 
-  private BadgeCriteria badgeCriteria;
+  private final BadgeCriteria badgeCriteria;
 
-  public ObtainBadgeOperation(BadgeCriteria badgeCriteria) {
+  /**
+   * The operation to obtain an specific Badge
+   *
+   * @param badgeCriteria the {@link BadgeCriteria} to be applied.
+   */
+  public ObtainBadgeOperation(final BadgeCriteria badgeCriteria) {
     this.badgeCriteria = badgeCriteria;
   }
 

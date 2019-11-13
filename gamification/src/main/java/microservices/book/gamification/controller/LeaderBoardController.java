@@ -17,8 +17,13 @@ public class LeaderBoardController {
 
   private final LeaderBoardService leaderBoardService;
 
+  /**
+   * Constructor
+   *
+   * @param leaderBoardService the {@link LeaderBoardService} injected.
+   */
   @Autowired
-  public LeaderBoardController(LeaderBoardService leaderBoardService) {
+  public LeaderBoardController(final LeaderBoardService leaderBoardService) {
     this.leaderBoardService = leaderBoardService;
   }
 

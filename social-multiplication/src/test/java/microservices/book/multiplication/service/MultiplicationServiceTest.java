@@ -29,7 +29,7 @@ class MultiplicationServiceTest {
     given(randomGenerator.generateRandomFactor()).willReturn(50, 30);
 
     //when
-    Multiplication multiplication = multiplicationService.createRandomMultiplication();
+    final Multiplication multiplication = multiplicationService.createRandomMultiplication();
 
     //then
     assertThat(multiplication).isEqualTo(new Multiplication(50, 30));

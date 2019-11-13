@@ -9,14 +9,26 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RabbitMQConfiguration {
+class RabbitMQConfiguration {
 
+  /**
+   * Creates the {@link TopicExchange} Bean.
+   *
+   * @param exchangeName the exchange name
+   * @return the {@link TopicExchange} Bean.
+   */
   @Bean
   public TopicExchange multiplicationExchange(
       @Value("${multiplication.exchange}") final String exchangeName) {
     return new TopicExchange(exchangeName);
   }
 
+  /**
+   * Creates the {@link RabbitTemplate} Bean.
+   *
+   * @param connectionFactory the {@link ConnectionFactory}.
+   * @return the {@link RabbitTemplate} Bean.
+   */
   @Bean
   public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
     final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
@@ -24,6 +36,11 @@ public class RabbitMQConfiguration {
     return rabbitTemplate;
   }
 
+  /**
+   * Creates the {@link Jackson2JsonMessageConverter} Bean.
+   *
+   * @return the {@link Jackson2JsonMessageConverter} Bean.
+   */
   @Bean
   public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
     return new Jackson2JsonMessageConverter();

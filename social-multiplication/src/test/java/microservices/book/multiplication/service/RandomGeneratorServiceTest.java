@@ -22,7 +22,7 @@ class RandomGeneratorServiceTest {
   @DisplayName("when generates random factors, then all of them should be between 11 and 100")
   void whenGeneratesRandomFactors_thenAllOfThemShouldBeBetween11And100() {
     // when a good sample of randomly generated factors is  generated
-    List<Integer> randomFactors = IntStream.range(0, 1000)
+    final List<Integer> randomFactors = IntStream.range(0, 1000)
         .map(factor -> randomGeneratorService.generateRandomFactor())
         .boxed()
         .collect(Collectors.toList());

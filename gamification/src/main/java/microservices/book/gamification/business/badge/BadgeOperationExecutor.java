@@ -18,7 +18,7 @@ public class BadgeOperationExecutor {
    *
    * @param badgeOperation the {@code badgeOperation} to be executed.
    */
-  public void addBadgeOperation(BadgeOperation badgeOperation) {
+  public void addBadgeOperation(final BadgeOperation badgeOperation) {
     operationQueue.add(badgeOperation);
   }
 

@@ -8,5 +8,11 @@ import microservices.book.gamification.client.dto.MultiplicationResultAttempt;
  */
 public interface MultiplicationResultAttemptClient {
 
+  /**
+   * Retrieves the {@link MultiplicationResultAttempt} from the multiplication microservice through a Rest API call.
+   *
+   * @param multiplicationId the multiplication id
+   * @return the {@link MultiplicationResultAttempt} of gamification microservice.
+   */
   MultiplicationResultAttempt retrieveMultiplicationResultAttemptById(final Long multiplicationId);
 }

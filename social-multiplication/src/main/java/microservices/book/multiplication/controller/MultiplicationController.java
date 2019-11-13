@@ -13,6 +13,11 @@ final class MultiplicationController {
 
   private final MultiplicationService multiplicationService;
 
+  /**
+   * Constructor.
+   *
+   * @param multiplicationService the injected {@link MultiplicationService}
+   */
   @Autowired
   public MultiplicationController(final MultiplicationService
       multiplicationService) {

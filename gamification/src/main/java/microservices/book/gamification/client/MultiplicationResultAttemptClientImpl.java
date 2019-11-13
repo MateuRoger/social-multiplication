@@ -17,6 +17,12 @@ public class MultiplicationResultAttemptClientImpl implements MultiplicationResu
   private final RestTemplate restTemplate;
   private final String multiplicationHost;
 
+  /**
+   * Constructor
+   *
+   * @param restTemplate       the {@link RestTemplate}
+   * @param multiplicationHost the multiplication microservice HOST
+   */
   @Autowired
   public MultiplicationResultAttemptClientImpl(final RestTemplate restTemplate,
       @Value("${multiplicationHost}") final String multiplicationHost) {

@@ -14,8 +14,13 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
 
   private final ScoreCardRepository scoreCardRepository;
 
+  /**
+   * Constructor.
+   *
+   * @param scoreCardRepository the injected {@link ScoreCardRepository}.
+   */
   @Autowired
-  public LeaderBoardServiceImpl(ScoreCardRepository scoreCardRepository) {
+  LeaderBoardServiceImpl(final ScoreCardRepository scoreCardRepository) {
     this.scoreCardRepository = scoreCardRepository;
   }
 

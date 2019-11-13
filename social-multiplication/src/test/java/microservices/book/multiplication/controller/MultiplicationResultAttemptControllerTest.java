@@ -48,14 +48,14 @@ class MultiplicationResultAttemptControllerTest {
   @Test
   @Tag("API-Test")
   @DisplayName("Given a correct multiplication attempt, when it is checked, then returns true ")
-  void givenCorrectMultiplicationAttempt_whenChecksIt_thenReturnsTrue() throws Exception {
+  void givenCorrectMultiplicationAttempt_whenChecksIt_thenReturnsTrue() throws Exception {//NOPMD
     genericParameterizedTest(true);
   }
 
   @Test
   @Tag("API-Test")
   @DisplayName("Given an incorrect multiplication attempt, when it is checked, then returns false ")
-  void givenInCorrectMultiplicationAttempt_whenChecksIt_thenReturnsFalse() throws Exception {
+  void givenInCorrectMultiplicationAttempt_whenChecksIt_thenReturnsFalse() throws Exception {//NOPMD
     genericParameterizedTest(false);
   }
 
@@ -66,13 +66,13 @@ class MultiplicationResultAttemptControllerTest {
         .checkAttempt(any(MultiplicationResultAttempt.class)))
         .willReturn(correct);
 
-    MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
+    final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
         new User("John"),
         new Multiplication(50, 70),
         3500, false);
 
     // when
-    MockHttpServletResponse response = mvc.perform(post("/results")
+    final MockHttpServletResponse response = mvc.perform(post("/results")
         .contentType(MediaType.APPLICATION_JSON)
         .content(jsonResult.write(attempt)
             .getJson()))
@@ -103,11 +103,11 @@ class MultiplicationResultAttemptControllerTest {
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
         user, multiplication, 3500, false);
 
-    List<MultiplicationResultAttempt> recentAttempts = List.of(attempt, attempt);
+    final List<MultiplicationResultAttempt> recentAttempts = List.of(attempt, attempt);
     given(multiplicationService.getStatsForUser(johnDoeAlias)).willReturn(recentAttempts);
 
     // when
-    MockHttpServletResponse response = mvc.perform(
+    final MockHttpServletResponse response = mvc.perform(
         get("/results")
             .param("alias", johnDoeAlias))
         .andReturn().getResponse();
@@ -131,7 +131,7 @@ class MultiplicationResultAttemptControllerTest {
     given(this.multiplicationService.getResultById(10L)).willReturn(Optional.of(desiredResult));
 
     //When
-    MockHttpServletResponse response = mvc.perform(
+    final MockHttpServletResponse response = mvc.perform(
         get("/results/10").accept(MediaType.APPLICATION_JSON))
         .andReturn().getResponse();
 

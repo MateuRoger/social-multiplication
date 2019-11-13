@@ -102,7 +102,7 @@ class GameServiceImplTest {
     this.gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    ArgumentCaptor<ScoreCard> scoreCardCaptor = ArgumentCaptor.forClass(ScoreCard.class);
+    final ArgumentCaptor<ScoreCard> scoreCardCaptor = ArgumentCaptor.forClass(ScoreCard.class);
     verify(scoreCardRepository).save(scoreCardCaptor.capture());
     assertThat(scoreCardCaptor.getValue().getScore()).isEqualTo(expectedScoreCard.getScore());
   }
@@ -196,7 +196,7 @@ class GameServiceImplTest {
         new MultiplicationResultAttempt("john", 10, 10, 100, true));
 
     // when
-    GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
+    final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
     final List<Badge> expectedBadgeCardList = Stream
@@ -224,7 +224,7 @@ class GameServiceImplTest {
         new MultiplicationResultAttempt("john", 47, 10, 470, true));
 
     // when
-    GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
+    final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
     assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
@@ -243,7 +243,7 @@ class GameServiceImplTest {
    * @param resultAttempt         the given {@link MultiplicationResultAttempt}
    */
   private void givenCommonForCalculationBadges(final List<Badge> currentBadgeList, final int currentScore,
-      final List<BadgeCard> expectedNewBadgeCards, long userId, long attemptId,
+      final List<BadgeCard> expectedNewBadgeCards, final long userId, final long attemptId,
       final MultiplicationResultAttempt resultAttempt) {
 
     givenCommonForNewAttempt(userId, attemptId, currentScore, resultAttempt);

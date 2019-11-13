@@ -9,10 +9,16 @@ import org.springframework.web.client.RestTemplate;
  * Configures the REST client in our application
  */
 @Configuration
-public class RestClientConfiguration {
+class RestClientConfiguration {
 
+  /**
+   * Creates the {@link RestTemplate} Bean.
+   *
+   * @param builder the {@link RestTemplateBuilder} used to create the {@link RestTemplate} Bean.
+   * @return the {@link RestTemplate} Bean.
+   */
   @Bean
-  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+  public RestTemplate restTemplate(final RestTemplateBuilder builder) {
     return builder.build();
   }
 }

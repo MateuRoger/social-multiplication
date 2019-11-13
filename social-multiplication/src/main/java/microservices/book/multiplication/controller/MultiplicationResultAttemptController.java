@@ -19,6 +19,11 @@ final class MultiplicationResultAttemptController {
 
   private final MultiplicationService multiplicationService;
 
+  /**
+   * Constructor.
+   *
+   * @param multiplicationService the injected {@link MultiplicationService}.
+   */
   @Autowired
   MultiplicationResultAttemptController(final MultiplicationService multiplicationService) {
     this.multiplicationService = multiplicationService;

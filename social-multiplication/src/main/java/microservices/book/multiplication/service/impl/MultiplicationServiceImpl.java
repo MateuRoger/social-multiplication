@@ -26,6 +26,15 @@ public class MultiplicationServiceImpl implements MultiplicationService {
   private final MultiplicationRepository multiplicationRepository;
   private final EventDispatcher eventDispatcher;
 
+  /**
+   * Constructor
+   *
+   * @param randomGeneratorService   the injected {@link RandomGeneratorService}
+   * @param attemptRepository        the injected {@link MultiplicationResultAttemptRepository}
+   * @param userRepository           the injected {@link UserRepository}
+   * @param multiplicationRepository the injected {@link MultiplicationRepository}
+   * @param eventDispatcher          the injected {@link EventDispatcher}
+   */
   @Autowired
   public MultiplicationServiceImpl(
       final RandomGeneratorService randomGeneratorService,

@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class GamificationApplicationTests {
 
   @Test
-  void contextLoads() {
+  void contextLoads() {//NOPMD
   }
 
 }

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * Represents a line in our LeaderBoard: it libnks a user to a total score
+ * Represents a line in our LeaderBoard: it links a user to a total score
  */
 @RequiredArgsConstructor
 @Getter
@@ -17,7 +17,9 @@ public final class LeaderBoardRow {
   private final Long userId;
   private final Long totalScore;
 
-  // Empty constructor for JSON / JPA
+  /**
+   * Empty constructor for JSON / JPA
+   */
   public LeaderBoardRow() {
     this(0L, 0L);
   }

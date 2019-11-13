@@ -29,11 +29,19 @@ public final class BadgeCard {
   private final long badgeTimestamp;
   private final Badge badge;
 
-  // Empty constructor for JSON / JPA
+  /**
+   * Empty constructor for JSON / JPA
+   */
   public BadgeCard() {
     this(null, null, 0, null);
   }
 
+  /**
+   * Constructor
+   *
+   * @param userId the user id related to.
+   * @param badge  the {@link Badge} obtained.
+   */
   public BadgeCard(final Long userId, final Badge badge) {
     this(null, userId, System.currentTimeMillis(), badge);
   }

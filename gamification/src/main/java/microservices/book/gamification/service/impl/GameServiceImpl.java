@@ -19,7 +19,6 @@ import microservices.book.gamification.domain.ScoreCard;
 import microservices.book.gamification.repository.BadgeCardRepository;
 import microservices.book.gamification.repository.ScoreCardRepository;
 import microservices.book.gamification.service.GameService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +29,14 @@ public class GameServiceImpl implements GameService {
   private final BadgeCardRepository badgeCardRepository;
   private final MultiplicationResultAttemptClient resultAttemptClient;
 
-  public GameServiceImpl(final ScoreCardRepository scoreCardRepository, final BadgeCardRepository badgeCardRepository,
+  /**
+   * Constructor
+   *
+   * @param scoreCardRepository the injected {@link ScoreCardRepository}.
+   * @param badgeCardRepository the injected {@link BadgeCardRepository}.
+   * @param resultAttemptClient the injected {@link MultiplicationResultAttemptClient}.
+   */
+  GameServiceImpl(final ScoreCardRepository scoreCardRepository, final BadgeCardRepository badgeCardRepository,
       final MultiplicationResultAttemptClient resultAttemptClient) {
     this.scoreCardRepository = scoreCardRepository;
     this.badgeCardRepository = badgeCardRepository;
@@ -81,7 +87,7 @@ public class GameServiceImpl implements GameService {
    * @param attemptId    the {@link MultiplicationResultAttempt}'s id
    * @return a list of all the new {@link BadgeCard} that have been stored.
    */
-  private List<BadgeCard> processNewBadgesByCase(final Long userId, int currentScore, Long attemptId) {
+  private List<BadgeCard> processNewBadgesByCase(final Long userId, final int currentScore, final Long attemptId) {
     final var scoreCardList = this.scoreCardRepository.findByUserIdOrderByScoreTimestampDesc(userId);
     final var badgeCardList = this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId);
 
@@ -107,8 +113,8 @@ public class GameServiceImpl implements GameService {
    * @param attemptId     the {@link MultiplicationResultAttempt}'s id
    * @return a {@link BadgeOperationExecutor}
    */
-  private BadgeOperationExecutor getBadgeOperationExecutor(int currentScore, List<ScoreCard> scoreCardList,
-      List<BadgeCard> badgeCardList, Long attemptId) {
+  private BadgeOperationExecutor getBadgeOperationExecutor(final int currentScore, final List<ScoreCard> scoreCardList,
+      final List<BadgeCard> badgeCardList, final Long attemptId) {
     final MultiplicationResultAttempt attempt = this.resultAttemptClient
         .retrieveMultiplicationResultAttemptById(attemptId);
 

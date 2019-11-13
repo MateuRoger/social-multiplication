@@ -51,9 +51,9 @@ class MultiplicationServiceImplTest {
   @DisplayName("Given a correct multiplication result attempt, when it is checks, then returns true")
   void givenCorrectMultiplicationResultAttempt_whenChecks_thenReturnsTrue() {
     // given
-    final String jhonDoeAlias = "John_doe";
+    final String johnDoeAlias = "John_doe";
     final Multiplication multiplication = new Multiplication(50, 60);
-    final User user = new User(jhonDoeAlias);
+    final User user = new User(johnDoeAlias);
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
         user, multiplication, 3000, false);
 
@@ -63,7 +63,7 @@ class MultiplicationServiceImplTest {
     final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
         attempt.getId(), user.getId(), true);
 
-    given(userRepository.findByAlias(jhonDoeAlias)).willReturn(Optional.empty());
+    given(userRepository.findByAlias(johnDoeAlias)).willReturn(Optional.empty());
 
     //when
     final boolean attemptResult = multiplicationService.checkAttempt(attempt);
@@ -79,16 +79,16 @@ class MultiplicationServiceImplTest {
   @DisplayName("Given an incorrect multiplication result attempt, when it is checks, then returns false")
   void givenIncorrectMultiplicationResultAttempt_whenChecks_thenReturnsFalse() {
     // given
-    final String jhonDoeAlias = "John_doe";
+    final String johnDoeAlias = "John_doe";
     final Multiplication multiplication = new Multiplication(50, 60);
-    final User user = new User(jhonDoeAlias);
+    final User user = new User(johnDoeAlias);
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
         user, multiplication, 3010, false);
 
     final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
         attempt.getId(), user.getId(), false);
 
-    given(userRepository.findByAlias(jhonDoeAlias)).willReturn(Optional.empty());
+    given(userRepository.findByAlias(johnDoeAlias)).willReturn(Optional.empty());
 
     //when
     final boolean attemptResult = multiplicationService.checkAttempt(attempt);
@@ -105,12 +105,12 @@ class MultiplicationServiceImplTest {
   void givenSameMultiplicationTwice_whenChecks_themUsedStoredMultiplication()
       throws NoSuchFieldException, IllegalAccessException {
     // given
-    final String jhonDoeAlias = "John_doe";
+    final String johnDoeAlias = "John_doe";
     final int factorA = 50;
     final int factorB = 60;
     final Multiplication multiplication = new Multiplication(factorA, factorB);
     final Multiplication existingMultiplication = getStoredMultiplication();
-    final User user = new User(jhonDoeAlias);
+    final User user = new User(johnDoeAlias);
 
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
         user, multiplication, 3000, false);
@@ -135,11 +135,11 @@ class MultiplicationServiceImplTest {
   @DisplayName("Given the a multiplication for first time, when checks the attempt, then the new multiplication is used")
   void givenSameMultiplicationFirstTime_whenChecks_themNewMultiplicationIsUsed() {
     // given
-    final String jhonDoeAlias = "John_doe";
+    final String johnDoeAlias = "John_doe";
     final int factor50 = 50;
     final int factor60 = 60;
     final Multiplication multiplication = new Multiplication(factor50, factor60);
-    final User user = new User(jhonDoeAlias);
+    final User user = new User(johnDoeAlias);
 
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
         user, multiplication, 3000, false);
@@ -171,14 +171,12 @@ class MultiplicationServiceImplTest {
 
   @Test
   @Tag("Unit")
-  @DisplayName("Given a user with previous attempts, when retrives he's stats, then returns top 5 attempts")
-  void givenUserWithPreviousAttempts_whenRetrivesStats_thenReturnsTtop5() {
+  @DisplayName("Given a user with previous attempts, when retrieves he's stats, then returns top 5 attempts")
+  void givenUserWithPreviousAttempts_whenRetrievesStats_thenReturnsTop5() {
     // given
     final String johnDoeAlias = "John_doe";
-    int factor50 = 50;
-    int factor60 = 60;
-    final List<MultiplicationResultAttempt> latestAttempts = generateTop5Attempts(johnDoeAlias,
-        factor50, factor60);
+    final List<MultiplicationResultAttempt> latestAttempts = generateTop5Attempts(
+    );
 
     // User don't exist previously
     given(userRepository.findByAlias(johnDoeAlias)).willReturn(Optional.empty());
@@ -186,7 +184,7 @@ class MultiplicationServiceImplTest {
         .willReturn(latestAttempts);
 
     // when
-    List<MultiplicationResultAttempt> latestAttemptResult = this.multiplicationService
+    final List<MultiplicationResultAttempt> latestAttemptResult = this.multiplicationService
         .getStatsForUser(johnDoeAlias);
 
     // then
@@ -194,10 +192,9 @@ class MultiplicationServiceImplTest {
 
   }
 
-  private List<MultiplicationResultAttempt> generateTop5Attempts(String johnDoeAlias, int factor50,
-      int factor60) {
-    final Multiplication multiplication = new Multiplication(factor50, factor60);
-    final User user = new User(johnDoeAlias);
+  private List<MultiplicationResultAttempt> generateTop5Attempts() {
+    final Multiplication multiplication = new Multiplication(50, 60);
+    final User user = new User("John_doe");
 
     final MultiplicationResultAttempt attempt1 = new MultiplicationResultAttempt(
         user, multiplication, 3010, false);

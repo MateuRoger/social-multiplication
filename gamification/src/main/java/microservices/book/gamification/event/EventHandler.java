@@ -15,7 +15,7 @@ public class EventHandler {
 
   private final GameService gameService;
 
-  EventHandler(final GameService gameService) {
+  private EventHandler(final GameService gameService) {
     this.gameService = gameService;
   }
 

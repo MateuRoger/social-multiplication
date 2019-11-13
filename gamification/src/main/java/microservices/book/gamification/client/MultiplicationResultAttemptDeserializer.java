@@ -1,7 +1,6 @@
 package microservices.book.gamification.client;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,7 +16,7 @@ public class MultiplicationResultAttemptDeserializer extends JsonDeserializer<Mu
 
   @Override
   public MultiplicationResultAttempt deserialize(final JsonParser jsonParser,
-      final DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+      final DeserializationContext deserializationContext) throws IOException {
 
     final JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 

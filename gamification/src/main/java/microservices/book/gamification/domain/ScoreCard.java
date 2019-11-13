@@ -40,11 +40,19 @@ public final class ScoreCard {
   @Column(name = "SCORE")
   private final int score;
 
-  //Empty constructor fot JSON / JPA
+  /**
+   * Empty constructor for JSON / JPA
+   */
   public ScoreCard() {
     this(null, null, null, 0, 0);
   }
 
+  /**
+   * Constructor.
+   *
+   * @param userId    the user id related to.
+   * @param attemptId the attempt id related to.
+   */
   public ScoreCard(final Long userId, final Long attemptId) {
     this(null, userId, attemptId, System.currentTimeMillis(), DEFAULT_SCORE);
   }

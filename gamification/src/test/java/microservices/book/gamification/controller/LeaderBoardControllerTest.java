@@ -50,7 +50,7 @@ class LeaderBoardControllerTest {
     given(this.leaderBoardService.getCurrentLeaderBoard()).willReturn(currentLeaderBoardRows);
 
     // when
-    MockHttpServletResponse response = mvc.perform(get("/leaders").accept(MediaType.APPLICATION_JSON)).andReturn()
+    final MockHttpServletResponse response = mvc.perform(get("/leaders").accept(MediaType.APPLICATION_JSON)).andReturn()
         .getResponse();
 
     // then

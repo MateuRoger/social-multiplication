@@ -4,13 +4,8 @@ plugins {
     id 'java'
 }
 
-ext {
-    assertJVersion = '3.13.2'
-}
-
 group = 'microservices.book.gamification'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 configurations {
     compileOnly {
@@ -40,7 +35,7 @@ dependencies {
     }
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation "org.junit.jupiter:junit-jupiter-api"
-    testImplementation "org.assertj:assertj-core:${assertJVersion}"
+    testImplementation "org.assertj:assertj-core:3.13.2"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
