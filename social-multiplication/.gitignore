@@ -1,4 +1,4 @@
-HELP.md
+../gamification/HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -32,3 +32,4 @@ out/
 .vscode/
 
 **/.directory
+/DDBB/
