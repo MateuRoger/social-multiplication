@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import microservices.book.gamification.business.badge.criteria.impl.LuckyNumberCriteria;
 import microservices.book.gamification.client.MultiplicationResultAttemptClient;
 import microservices.book.gamification.client.dto.MultiplicationResultAttempt;
 import microservices.book.gamification.domain.Badge;
@@ -221,7 +222,7 @@ class GameServiceImplTest {
 
     givenCommonForCalculationBadges(currentBadgeList, currentScore,
         expectedBadgeCardList, userId, attemptId,
-        new MultiplicationResultAttempt("john", 47, 10, 470, true));
+        new MultiplicationResultAttempt("john", 42, 10, 470, true));
 
     // when
     final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);

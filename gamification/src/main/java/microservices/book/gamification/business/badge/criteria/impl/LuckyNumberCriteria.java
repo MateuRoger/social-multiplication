@@ -14,7 +14,7 @@ import microservices.book.gamification.domain.BadgeCard;
 @RequiredArgsConstructor
 public class LuckyNumberCriteria implements BadgeCriteria {
 
-  private static final int LUCKY_NUMBER = 47;
+  private static final int LUCKY_NUMBER = 42;
 
   private final List<BadgeCard> badgeCards;
   private final MultiplicationResultAttempt attempt;
