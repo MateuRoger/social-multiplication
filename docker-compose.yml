@@ -6,17 +6,16 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
-    labels:
-      NAME: rabbitmq
+    container_name: social-multiplication-rabbitmq
     volumes:
-      - ./rabbitmq-isolated.conf:${PWD}/../rabbitMQ/rabbitmq.config
+      - ./../rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
 
   jetty-server:
-      container_name: jetty-server
-      image: jetty:9.4.18-alpine
-      volumes:
-      - ${PWD}/webapps:${PWD}/../jetty/webapps
-      - ${PWD}/start.d:${PWD}/../jetty/start.d
-      ports:
-      - 8080:8080
+    container_name: social-multiplication-jetty
+    image: jetty:9.4-jre11
+    volumes:
+      - ./ui/webapps:/var/lib/jetty/webapps/ui
+      - ./ui/start.d:/var/lib/jetty/start.d
+    ports:
+      - 9090:9090
       - 443:8443
