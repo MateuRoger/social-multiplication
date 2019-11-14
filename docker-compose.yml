@@ -1,0 +1,22 @@
+version: '3'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbit
+    ports:
+      - 15672:15672
+      - 5672:5672
+    labels:
+      NAME: rabbitmq
+    volumes:
+      - ./rabbitmq-isolated.conf:${PWD}/../rabbitMQ/rabbitmq.config
+
+  jetty-server:
+      container_name: jetty-server
+      image: jetty:9.4.18-alpine
+      volumes:
+      - ${PWD}/webapps:${PWD}/../jetty/webapps
+      - ${PWD}/start.d:${PWD}/../jetty/start.d
+      ports:
+      - 8080:8080
+      - 443:8443
