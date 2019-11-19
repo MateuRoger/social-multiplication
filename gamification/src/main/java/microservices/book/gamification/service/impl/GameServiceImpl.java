@@ -141,7 +141,7 @@ public class GameServiceImpl implements GameService {
   @Override
   public GameStats retrieveStatsForUser(final Long userId) {
     return new GameStats(userId,
-        this.scoreCardRepository.getTotalScoreForUser(userId),
+        Optional.ofNullable(this.scoreCardRepository.getTotalScoreForUser(userId)).orElse(0),
         this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId).stream()
             .map(BadgeCard::getBadge)
             .collect(Collectors.toList()));
