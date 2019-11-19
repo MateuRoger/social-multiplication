@@ -22,7 +22,6 @@ class UserStatsController {
         this.gameService = gameService;
     }
 
-    @CrossOrigin
     @GetMapping
     public GameStats getStatsForUser(@RequestParam("userId") final Long userId) {
         return gameService.retrieveStatsForUser(userId);

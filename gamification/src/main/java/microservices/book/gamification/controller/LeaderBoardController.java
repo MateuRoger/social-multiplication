@@ -28,7 +28,6 @@ public class LeaderBoardController {
     this.leaderBoardService = leaderBoardService;
   }
 
-  @CrossOrigin
   @GetMapping
   public List<LeaderBoardRow> getLeaderBoard() {
     return this.leaderBoardService.getCurrentLeaderBoard();
