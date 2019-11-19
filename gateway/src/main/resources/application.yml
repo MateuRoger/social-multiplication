@@ -2,35 +2,41 @@ server:
   port: 8000
 
 zuul:
-  prefix: /api
+  ignoredServices: '*'
   ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+  prefix: /api
   routes:
     multiplications:
       path: /multiplications/**
-      url: http://localhost:8080/multiplications
+      serviceId: multiplication
+      strip-prefix: false
     results:
       path: /results/**
-      url: http://localhost:8080/results
+      serviceId: multiplication
+      strip-prefix: false
     leaders:
       path: /leaders/**
-      url: http://localhost:8081/leaders
+      serviceId: gamification
+      strip-prefix: false
     stats:
       path: /stats/**
-      url: http://localhost:8081/stats
+      serviceId: gamification
+      strip-prefix: false
 
 endpoints:
   trace:
     sensitive: false
 
-ribbon:
-  eureka:
-    enabled: false
+#debug: true
+#trace: true
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        cloud:
+#          netflix: trace
 
-debug: true
-trace: true
-logging:
-  level:
-    org:
-      springframework:
-        cloud:
-          netflix: trace
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka/
