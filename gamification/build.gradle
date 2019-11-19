@@ -4,14 +4,15 @@ plugins {
     id 'java'
 }
 
-group = 'microservices.book.gamification'
-version = '0.0.1-SNAPSHOT'
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
 }
+
+group = 'microservice.book'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
 
 wrapper {
     version = '6.0'
