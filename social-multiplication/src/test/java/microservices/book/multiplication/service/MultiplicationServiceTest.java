@@ -22,8 +22,8 @@ class MultiplicationServiceTest {
 
   @Test
   @Tag("Integration")
-  @DisplayName("Given a generatorRamdomFactory, when creates a random multiplication, then will it returns 1500")
-  void givenGeneratorRamdomFactory_whenCreatesRandomMultiplication_thenWillReturnsMultiplication() {
+  @DisplayName("Given a generatorRandomFactory, when creates a random multiplication, then will it returns 1500")
+  void givenGeneratorRandomFactory_whenCreatesRandomMultiplication_thenWillReturnsMultiplication() {
 
     // given (our mocked Random Generator service will return first 50, then 30)
     given(randomGenerator.generateRandomFactor()).willReturn(50, 30);

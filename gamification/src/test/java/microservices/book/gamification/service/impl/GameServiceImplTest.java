@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import microservices.book.gamification.business.badge.criteria.impl.LuckyNumberCriteria;
 import microservices.book.gamification.client.MultiplicationResultAttemptClient;
 import microservices.book.gamification.client.dto.MultiplicationResultAttempt;
 import microservices.book.gamification.domain.Badge;

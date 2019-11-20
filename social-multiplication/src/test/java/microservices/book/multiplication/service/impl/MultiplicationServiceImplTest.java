@@ -217,10 +217,10 @@ class MultiplicationServiceImplTest {
     given(this.attemptRepository.findById(10L)).willReturn(Optional.of(desiredResult));
 
     //When
-    final Optional<MultiplicationResultAttempt> obtainedResult = this.multiplicationService.getResultById(10L);
+    final MultiplicationResultAttempt obtainedResult = this.multiplicationService.getResultById(10L);
 
     //Then
-    assertThat(obtainedResult.orElseThrow(() -> new RuntimeException("this object can not be null")))
+    assertThat(obtainedResult)
         .isEqualTo(desiredResult);
   }
 
