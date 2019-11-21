@@ -9,6 +9,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @EnableCircuitBreaker
 @SpringBootApplication
 public class GamificationApplication {
+
   /**
    * The main method of GamificationApplication
    *

@@ -1,8 +1,6 @@
 package microservices.book.gamification.client;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.ribbon.proxy.annotation.Hystrix;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import microservices.book.gamification.client.dto.MultiplicationResultAttempt;
 import org.springframework.beans.factory.annotation.Autowired;
