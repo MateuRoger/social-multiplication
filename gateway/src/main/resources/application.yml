@@ -24,17 +24,10 @@ zuul:
       strip-prefix: false
 
 endpoints:
+  routes:
+    sensitive: false
   trace:
     sensitive: false
-
-#debug: true
-#trace: true
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        cloud:
-#          netflix: trace
 
 eureka:
   client:
