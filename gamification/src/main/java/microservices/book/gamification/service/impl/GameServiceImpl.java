@@ -146,4 +146,10 @@ public class GameServiceImpl implements GameService {
             .map(BadgeCard::getBadge)
             .collect(Collectors.toList()));
   }
+
+  @Override
+  public ScoreCard getScoreForAttempt(final long attemptId) {
+    final ScoreCard byAttempId = this.scoreCardRepository.findByAttemptId(attemptId);
+    return byAttempId;
+  }
 }

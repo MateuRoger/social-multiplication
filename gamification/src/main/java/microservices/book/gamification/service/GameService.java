@@ -1,6 +1,7 @@
 package microservices.book.gamification.service;
 
 import microservices.book.gamification.domain.GameStats;
+import microservices.book.gamification.domain.ScoreCard;
 
 /**
  * This service includes the main logic for gamifying the system.
@@ -24,4 +25,11 @@ public interface GameService {
    * @return the total statistics for that user
    */
   GameStats retrieveStatsForUser(final Long userId);
+
+  /**
+   * Gets the score for a given attempt
+   * @param attemptId the attempt unique id
+   * @return a {@link ScoreCard} with the details of the score for that attempt
+   */
+  ScoreCard getScoreForAttempt(final long attemptId);
 }
