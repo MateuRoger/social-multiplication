@@ -5,6 +5,10 @@ import microservices.book.multiplication.domain.Multiplication;
 import microservices.book.multiplication.domain.MultiplicationResultAttempt;
 import microservices.book.multiplication.domain.User;
 
+/**
+ * It provides methods for the multiplication domain. This interface provides all the allowed operations that a consumer
+ * can do with a Multiplication.
+ */
 public interface MultiplicationService {
 
   /**
