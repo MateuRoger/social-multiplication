@@ -95,7 +95,7 @@ public class GameServiceImpl implements GameService {
     final BadgeOperationExecutor badgeOptExecutor = getBadgeOperationExecutor(currentScore, scoreCardList,
         badgeCardList, attemptId);
 
-    final Set<Badge> newBadges = badgeOptExecutor.executeAllOperations();
+    final List<Badge> newBadges = badgeOptExecutor.executeAllOperations();
 
     final List<BadgeCard> allBadges = new ArrayList<>(List.copyOf(badgeCardList));
     allBadges.addAll(newBadges.stream()
