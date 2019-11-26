@@ -301,17 +301,17 @@ class GameServiceImplTest {
             currentBadges.stream()
                 .map(BadgeCard::getBadge).collect(Collectors.toList())));
   }
-  
+
   @Test
   @Tag("Unit")
   @DisplayName("Given an attempt id, when getScoreForAttempt, then returns the ScoreCard associated")
-  void testRetriveAScoreCardByAttemptId(){
+  void testRetriveAScoreCardByAttemptId() {
     // given 
     final long attemptId = 10L;
     final ScoreCard expectedScore = new ScoreCard(100L, 10L, attemptId, Calendar.getInstance().getTimeInMillis(),
         ScoreCard.DEFAULT_SCORE);
 
-    given(this.scoreCardRepository.findByAttemptId(attemptId)).willReturn( expectedScore);
+    given(this.scoreCardRepository.findByAttemptId(attemptId)).willReturn(expectedScore);
 
     // when
     final ScoreCard obtainedScore = this.gameService.getScoreForAttempt(attemptId);

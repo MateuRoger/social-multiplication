@@ -3,7 +3,6 @@ package microservices.book.gamification.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import microservices.book.gamification.business.badge.BadgeOperationExecutor;

@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Calendar;
 import microservices.book.gamification.domain.ScoreCard;
-import microservices.book.gamification.repository.ScoreCardRepository;
 import microservices.book.gamification.service.GameService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,12 +42,14 @@ class ScoreControllerTest {
   void givenExistingAttemptId_whenGetScoreForAttempt_thenReturnsScoreCardOfUser() throws Exception {
     // given
     final long attemptId = 10L;
-    final ScoreCard expectedScoreCard = new ScoreCard(100L, 1L, attemptId, Calendar.getInstance().getTimeInMillis(), ScoreCard.DEFAULT_SCORE);
+    final ScoreCard expectedScoreCard = new ScoreCard(100L, 1L, attemptId, Calendar.getInstance().getTimeInMillis(),
+        ScoreCard.DEFAULT_SCORE);
 
     given(this.gameService.getScoreForAttempt(attemptId)).willReturn(expectedScoreCard);
 
     // when
-    final MockHttpServletResponse response = mvc.perform(get("/scores/" + attemptId).accept(MediaType.APPLICATION_JSON)).andReturn()
+    final MockHttpServletResponse response = mvc.perform(get("/scores/" + attemptId).accept(MediaType.APPLICATION_JSON))
+        .andReturn()
         .getResponse();
 
     // then

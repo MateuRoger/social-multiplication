@@ -1,13 +1,10 @@
 package microservices.book.multiplication.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.UnsupportedEncodingException;
-import jdk.jfr.Description;
 import microservices.book.multiplication.domain.User;
 import microservices.book.multiplication.service.UserService;
 import org.junit.jupiter.api.BeforeEach;

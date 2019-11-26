@@ -2,10 +2,8 @@ package microservices.book.gamification.business.badge;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import microservices.book.gamification.domain.Badge;
 
 /**

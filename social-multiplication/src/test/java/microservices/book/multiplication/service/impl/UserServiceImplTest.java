@@ -7,7 +7,6 @@ import java.util.Optional;
 import microservices.book.multiplication.domain.User;
 import microservices.book.multiplication.repository.UserRepository;
 import microservices.book.multiplication.service.UserService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -17,13 +16,14 @@ import org.mockito.MockitoAnnotations;
 
 
 class UserServiceImplTest {
+
   private static UserService userService;
 
   @Mock
   private static UserRepository userRepositoryMocked;
 
   @BeforeEach
-  void setUp(){
+  void setUp() {
     // With this call to initMocks we tell Mockito to process the annotations
     MockitoAnnotations.initMocks(this);
     userService = new UserServiceImpl(userRepositoryMocked);

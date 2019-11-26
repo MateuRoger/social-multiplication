@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * This class implements a REST API for the Gamification User
- Statistics service.
+ * This class implements a REST API for the Gamification User Scores service.
  */
 @RestController
 @RequestMapping("/scores")
 public class ScoreController {
+
   private final GameService gameService;
 
   @Autowired
@@ -23,7 +23,7 @@ public class ScoreController {
   }
 
   @GetMapping("/{attemptId}")
-  public ScoreCard getScoreForAttempt( @PathVariable("attemptId") final Long attemptId){
+  public ScoreCard getScoreForAttempt(@PathVariable("attemptId") final Long attemptId) {
     return gameService.getScoreForAttempt(attemptId);
   }
 }
