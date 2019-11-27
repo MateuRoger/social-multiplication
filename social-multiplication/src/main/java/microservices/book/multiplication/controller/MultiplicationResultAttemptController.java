@@ -43,11 +43,7 @@ final class MultiplicationResultAttemptController {
   public ResponseEntity<MultiplicationResultAttempt> postResult(
       final @RequestBody MultiplicationResultAttempt multiplicationResultAttempt) {
     log.info("Checking the attempt {} from server @ {}", multiplicationResultAttempt, serverPort);
-    return ResponseEntity.ok(new MultiplicationResultAttempt(
-        multiplicationResultAttempt.getUser(),
-        multiplicationResultAttempt.getMultiplication(),
-        multiplicationResultAttempt.getResultAttempt(),
-        multiplicationService.checkAttempt(multiplicationResultAttempt)));
+    return ResponseEntity.ok(multiplicationService.checkAttempt(multiplicationResultAttempt));
   }
 
   @GetMapping

@@ -54,22 +54,25 @@ class MultiplicationServiceImplTest {
     final String johnDoeAlias = "John_doe";
     final Multiplication multiplication = new Multiplication(50, 60);
     final User user = new User(johnDoeAlias);
+    final int resultAttempt = 3000;
+
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
-        user, multiplication, 3000, false);
+        user, multiplication, resultAttempt, false);
 
     final MultiplicationResultAttempt verifiedAttempt = new MultiplicationResultAttempt(
-        user, multiplication, 3000, true);
+        user, multiplication, resultAttempt, true);
 
     final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
         attempt.getId(), user.getId(), true);
 
     given(userRepository.findByAlias(johnDoeAlias)).willReturn(Optional.empty());
+    given(attemptRepository.save(verifiedAttempt)).willReturn(verifiedAttempt);
 
     //when
-    final boolean attemptResult = multiplicationService.checkAttempt(attempt);
+    final MultiplicationResultAttempt attemptResult = multiplicationService.checkAttempt(attempt);
 
     //then
-    assertThat(attemptResult).isTrue();
+    assertThat(attemptResult.isCorrect()).isTrue();
     verify(attemptRepository).save(verifiedAttempt);
     verify(eventDispatcher).send(eq(event));
   }
@@ -82,19 +85,23 @@ class MultiplicationServiceImplTest {
     final String johnDoeAlias = "John_doe";
     final Multiplication multiplication = new Multiplication(50, 60);
     final User user = new User(johnDoeAlias);
+    final int resultAttempt = 3010;
+
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
-        user, multiplication, 3010, false);
+        user, multiplication, resultAttempt, false);
+
 
     final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
         attempt.getId(), user.getId(), false);
 
     given(userRepository.findByAlias(johnDoeAlias)).willReturn(Optional.empty());
+    given(attemptRepository.save(attempt)).willReturn(attempt);
 
     //when
-    final boolean attemptResult = multiplicationService.checkAttempt(attempt);
+    final MultiplicationResultAttempt attemptResult = multiplicationService.checkAttempt(attempt);
 
     //then
-    assertThat(attemptResult).isFalse();
+    assertThat(attemptResult.isCorrect()).isFalse();
     verify(attemptRepository).save(attempt);
     verify(eventDispatcher).send(eq(event));
   }
