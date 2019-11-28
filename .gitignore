@@ -18,4 +18,5 @@
 
 **/.directory
 **/DDBB/
-**/reports
+**/reports/
+**/logs/
