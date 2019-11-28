@@ -96,7 +96,7 @@ public class GameServiceImpl implements GameService {
 
     final List<Badge> newBadges = badgeOptExecutor.executeAllOperations();
 
-    final List<BadgeCard> allBadges = new ArrayList<>(List.copyOf(badgeCardList));
+    final List<BadgeCard> allBadges = new ArrayList<>();
     allBadges.addAll(newBadges.stream()
         .map(badge -> giveBadgeCard(userId, badge))
         .collect(Collectors.toList()));
@@ -139,6 +139,7 @@ public class GameServiceImpl implements GameService {
 
   @Override
   public GameStats retrieveStatsForUser(final Long userId) {
+    log.info("Retrieving the stats for the user {}", userId);
     return new GameStats(userId,
         Optional.ofNullable(this.scoreCardRepository.getTotalScoreForUser(userId)).orElse(0),
         this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId).stream()

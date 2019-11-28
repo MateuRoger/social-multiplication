@@ -148,11 +148,8 @@ class GameServiceImplTest {
     final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    final List<Badge> expectedBadgeCardList = Stream
-        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
-        .collect(Collectors.toList());
     assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
-        expectedBadgeCardList));
+        List.of(expectedNewBadgeCard.getBadge())));
   }
 
   @Test
@@ -174,11 +171,8 @@ class GameServiceImplTest {
     final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    final List<Badge> expectedBadgeCardList = Stream
-        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
-        .collect(Collectors.toList());
     assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
-        expectedBadgeCardList));
+        List.of(expectedNewBadgeCard.getBadge())));
   }
 
   @Test
@@ -200,11 +194,8 @@ class GameServiceImplTest {
     final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    final List<Badge> expectedBadgeCardList = Stream
-        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
-        .collect(Collectors.toList());
     assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
-        expectedBadgeCardList));
+        List.of(expectedNewBadgeCard.getBadge())));
   }
 
   @Test
