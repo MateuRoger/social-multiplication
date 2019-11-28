@@ -52,3 +52,12 @@ dependencyManagement {
 test {
 	useJUnitPlatform()
 }
+
+def activeProfile = "test"
+
+bootRun {
+	println("bootRun")
+	if (!activeProfile.isEmpty()) {
+		systemProperty "spring.profiles.active", activeProfile
+	}
+}
