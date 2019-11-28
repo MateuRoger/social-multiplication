@@ -25,8 +25,8 @@ public class AdminServiceImpl implements AdminService {
 
   @Override
   public void deleteDataBaseContents() {
-    this.multiplicationRepository.deleteAll();
     this.resultAttemptRepository.deleteAll();
+    this.multiplicationRepository.deleteAll();
     this.userRepository.deleteAll();
   }
 }
