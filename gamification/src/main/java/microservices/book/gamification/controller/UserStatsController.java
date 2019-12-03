@@ -23,8 +23,8 @@ class UserStatsController {
     this.gameService = gameService;
   }
 
-  @GetMapping("/{userId}")
-  public GameStats getStatsForUser(@PathVariable("userId") final Long userId) {
+  @GetMapping()
+  public GameStats getStatsForUser(@RequestParam("userId") final Long userId) {
     return gameService.retrieveStatsForUser(userId);
   }
 }
