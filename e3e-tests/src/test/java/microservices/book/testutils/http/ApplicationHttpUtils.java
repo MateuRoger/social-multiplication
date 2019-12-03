@@ -9,6 +9,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 
 public class ApplicationHttpUtils {
+
   private final String baseUrl;
 
   public ApplicationHttpUtils(final String baseUrl) {

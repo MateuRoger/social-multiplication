@@ -90,7 +90,6 @@ class MultiplicationServiceImplTest {
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
         user, multiplication, resultAttempt, false);
 
-
     final MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
         attempt.getId(), user.getId(), false);
 

@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author moises.macero
+ * CORES configuration
  */
 @Configuration
 @EnableWebMvc

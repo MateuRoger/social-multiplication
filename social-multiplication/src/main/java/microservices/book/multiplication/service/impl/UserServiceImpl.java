@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User getUserById(Long userId) {
-    return this.userRepository.findById(userId).orElse(null);
+    return this.userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("The requested userId [" + userId + "] does not exist."));
   }
 }

@@ -60,7 +60,8 @@ public class GameServiceImpl implements GameService {
     final GameStats gameStats = new GameStats(userId, totalScore,
         badgeCardList.stream().map(BadgeCard::getBadge).collect(Collectors.toList()));
     log.info("Returning the gameStat : userId = {}, score = {}, badges = {}",
-        gameStats.getUserId(), gameStats.getScore(), gameStats.getBadges().stream().map(Object::toString).collect(Collectors.joining(",")));
+        gameStats.getUserId(), gameStats.getScore(),
+        gameStats.getBadges().stream().map(Object::toString).collect(Collectors.joining(",")));
     return gameStats;
   }
 

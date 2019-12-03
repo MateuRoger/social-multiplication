@@ -1,6 +1,7 @@
 package microservices.book.testutils.beans;
 
 public class ScoreResponse {
+
   private long userId;
   private int score;
 
