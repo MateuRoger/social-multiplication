@@ -14,18 +14,17 @@ import microservices.book.testutils.beans.Stats;
 
 public class MultiplicationFeatureSteps {
 
-  private MultiplicationApplication app;
+  private final MultiplicationApplication app;
   private AttemptResponse lastAttemptResponse;
   private Stats lastStatsResponse;
 
-  public MultiplicationFeatureSteps() {
+  MultiplicationFeatureSteps() {
     this.app = new MultiplicationApplication();
   }
 
   @Before
-  public void cleanUp() throws InterruptedException {
+  public void cleanUp() {
     app.deleteData();
-//    Thread.sleep(1000);
   }
 
   @When("^the user ([^\\s]+) sends (\\d+) ([^\\s]+) attempts$")
@@ -73,12 +72,8 @@ public class MultiplicationFeatureSteps {
     }
   }
 
-  public MultiplicationApplication getApp() {
+  MultiplicationApplication getApp() {
     return app;
-  }
-
-  public AttemptResponse getLastAttemptResponse() {
-    return lastAttemptResponse;
   }
 
 }

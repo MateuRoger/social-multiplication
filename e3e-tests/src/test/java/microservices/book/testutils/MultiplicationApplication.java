@@ -25,7 +25,7 @@ public class MultiplicationApplication {
   private static final String CONTEXT_DELETE_DATA_GAM = "/gamification/admin/delete-db";
   private static final String CONTEXT_DELETE_DATA_MULT = "/multiplications/admin/delete-db";
   private static final String USER_ID_PARAM = "?userId=";
-  private ApplicationHttpUtils httpUtils;
+  private final ApplicationHttpUtils httpUtils;
 
   public MultiplicationApplication() {
     this.httpUtils = new ApplicationHttpUtils(APPLICATION_BASE_URL);

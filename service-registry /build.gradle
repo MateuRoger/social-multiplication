@@ -12,7 +12,7 @@ configurations {
 
 group = 'microservice.book'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+gradle.sourceCompatibility = '11'
 
 wrapper {
 	version = '6.0'

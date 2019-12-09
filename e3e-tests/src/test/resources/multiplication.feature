@@ -1,13 +1,8 @@
-Feature: Users are able to send their multiplication
-  attempts, which may be correct or not. When users
-  send a correct attempt, they get a response indicating
-  that the result is the right one. Also, they get points
-  and potentially some badges when they are right, so they
-  get motivation to come back and keep playing. Badges are
-  won for the first right attempt and when the user gets 100,
-  500 and 999 points respectively. If users send a wrong
-  attempt, they don't get any point or badge.
-
+Feature: Users are able to send their multiplication attempts, which may be correct or not.
+  When users send a correct attempt, they get a response indicating that the result is the right one.
+  Also, they get points  and potentially some badges when they are right, so they  get motivation to come back and keep playing.
+  Badges are  won for the first right attempt and when the user gets 100,  500 and 999 points respectively.
+  If users send a wrong  attempt, they don't get any point or badge.
 #  Scenario: The user sends a first right attempt and gets a badge
 #    When the user john_snow sends 1 right attempts
 #    Then the user gets a response indicating the attempt is right
@@ -23,7 +18,7 @@ Feature: Users are able to send their multiplication
     And the user does not get any badge
 
   Scenario: The user sends a wrong attempt and gets nothing
-      When the user john_snow sends 1 wrong attempts
+    When the user john_snow sends 1 wrong attempts
     Then the user gets a response indicating the attempt is wrong
     And the user gets 0 points for the attempt
     And the user does not get any badge
@@ -37,7 +32,7 @@ Feature: Users are able to send their multiplication
     And the user gets the <badge_name> badge
 
     Examples:
-      | previous_attempts | badge_name           |
-      | 9                 | BRONZE_MULTIPLICATOR |
-      | 49                | SILVER_MULTIPLICATOR |
-      | 99                | GOLD_MULTIPLICATOR   |
+      | previous_attempts  | badge_name           |
+      | 99                 | BRONZE_MULTIPLICATOR |
+      | 499                | SILVER_MULTIPLICATOR |
+      | 999                | GOLD_MULTIPLICATOR   |
