@@ -1,9 +1,7 @@
 package microservices.book.gamification.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import microservices.book.gamification.business.badge.BadgeOperationExecutor;
@@ -52,15 +50,19 @@ public class GameServiceImpl implements GameService {
       scoredCard = new ScoreCard(userId, attemptId);
       this.scoreCardRepository.save(scoredCard);
     }
-    log.info("User with id {} scored {} points for attempt id {}", userId, scoredCard.getScore(), attemptId);
+    log.info("User with id {} scored {} points for attempt id {}", userId, scoredCard.getScore(),
+        attemptId);
 
     final int totalScore = Optional.ofNullable(this.scoreCardRepository.getTotalScoreForUser(userId)).orElse(0);
-    log.info("New score for user {} is {}", userId, totalScore);
 
     final List<BadgeCard> badgeCardList = processNewBadgesByCase(userId, totalScore, attemptId);
 
-    return new GameStats(userId, totalScore,
+    final GameStats gameStats = new GameStats(userId, totalScore,
         badgeCardList.stream().map(BadgeCard::getBadge).collect(Collectors.toList()));
+    log.info("Returning the gameStat : userId = {}, score = {}, badges = {}",
+        gameStats.getUserId(), gameStats.getScore(),
+        gameStats.getBadges().stream().map(Object::toString).collect(Collectors.joining(",")));
+    return gameStats;
   }
 
   /**
@@ -95,14 +97,10 @@ public class GameServiceImpl implements GameService {
     final BadgeOperationExecutor badgeOptExecutor = getBadgeOperationExecutor(currentScore, scoreCardList,
         badgeCardList, attemptId);
 
-    final Set<Badge> newBadges = badgeOptExecutor.executeAllOperations();
+    final List<Badge> newBadges = badgeOptExecutor.executeAllOperations();
 
-    final List<BadgeCard> allBadges = new ArrayList<>(List.copyOf(badgeCardList));
-    allBadges.addAll(newBadges.stream()
-        .map(badge -> giveBadgeCard(userId, badge))
-        .collect(Collectors.toList()));
-
-    return allBadges;
+    return newBadges.stream()
+        .map(badge -> giveBadgeCard(userId, badge)).collect(Collectors.toList());
   }
 
   /**
@@ -140,10 +138,17 @@ public class GameServiceImpl implements GameService {
 
   @Override
   public GameStats retrieveStatsForUser(final Long userId) {
+    log.info("Retrieving the stats for the user {}", userId);
     return new GameStats(userId,
         Optional.ofNullable(this.scoreCardRepository.getTotalScoreForUser(userId)).orElse(0),
         this.badgeCardRepository.findByUserIdOrderByBadgeTimestampDesc(userId).stream()
             .map(BadgeCard::getBadge)
             .collect(Collectors.toList()));
+  }
+
+  @Override
+  public ScoreCard getScoreForAttempt(final long attemptId) {
+    log.info("Getting the score for attempt with id {}", attemptId);
+    return this.scoreCardRepository.findByAttemptId(attemptId);
   }
 }

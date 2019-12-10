@@ -5,10 +5,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import microservices.book.gamification.client.MultiplicationResultAttemptClient;
 import microservices.book.gamification.client.dto.MultiplicationResultAttempt;
 import microservices.book.gamification.domain.Badge;
@@ -147,11 +147,8 @@ class GameServiceImplTest {
     final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    final List<Badge> expectedBadgeCardList = Stream
-        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
-        .collect(Collectors.toList());
     assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
-        expectedBadgeCardList));
+        List.of(expectedNewBadgeCard.getBadge())));
   }
 
   @Test
@@ -173,11 +170,8 @@ class GameServiceImplTest {
     final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    final List<Badge> expectedBadgeCardList = Stream
-        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
-        .collect(Collectors.toList());
     assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
-        expectedBadgeCardList));
+        List.of(expectedNewBadgeCard.getBadge())));
   }
 
   @Test
@@ -199,11 +193,8 @@ class GameServiceImplTest {
     final GameStats obtainedGameStats = gameService.newAttemptForUser(userId, attemptId, true);
 
     // then
-    final List<Badge> expectedBadgeCardList = Stream
-        .concat(currentBadgeList.stream(), Stream.of(expectedNewBadgeCard.getBadge()))
-        .collect(Collectors.toList());
     assertThat(obtainedGameStats).isEqualTo(new GameStats(userId, currentScore,
-        expectedBadgeCardList));
+        List.of(expectedNewBadgeCard.getBadge())));
   }
 
   @Test
@@ -299,5 +290,24 @@ class GameServiceImplTest {
         .isEqualTo(new GameStats(userId, currentScore,
             currentBadges.stream()
                 .map(BadgeCard::getBadge).collect(Collectors.toList())));
+  }
+
+  @Test
+  @Tag("Unit")
+  @DisplayName("Given an attempt id, when getScoreForAttempt, then returns the ScoreCard associated")
+  void testRetriveAScoreCardByAttemptId() {
+    // given 
+    final long attemptId = 10L;
+    final ScoreCard expectedScore = new ScoreCard(100L, 10L, attemptId, Calendar.getInstance().getTimeInMillis(),
+        ScoreCard.DEFAULT_SCORE);
+
+    given(this.scoreCardRepository.findByAttemptId(attemptId)).willReturn(expectedScore);
+
+    // when
+    final ScoreCard obtainedScore = this.gameService.getScoreForAttempt(attemptId);
+
+    // then
+    assertThat(obtainedScore).isEqualTo(
+        expectedScore);
   }
 }

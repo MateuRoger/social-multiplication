@@ -61,14 +61,17 @@ class MultiplicationResultAttemptControllerTest {
   private void genericParameterizedTest(final boolean correct) throws Exception {
     // given (remember we're not testing here the service itself)
 
+    final User johnUser = new User("John");
+    final Multiplication multiplication = new Multiplication(50, 70);
+    final int resultAttempt = 3500;
+
     given(multiplicationService
         .checkAttempt(any(MultiplicationResultAttempt.class)))
-        .willReturn(correct);
+        .willReturn(new MultiplicationResultAttempt(
+            johnUser, multiplication, resultAttempt, correct));
 
     final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(
-        new User("John"),
-        new Multiplication(50, 70),
-        3500, false);
+        johnUser, multiplication, resultAttempt, false);
 
     // when
     final MockHttpServletResponse response = mvc.perform(post("/results")

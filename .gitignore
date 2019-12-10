@@ -18,4 +18,6 @@
 
 **/.directory
 **/DDBB/
-**/reports
+**/reports/
+**/logs/
+**/target/

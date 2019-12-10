@@ -1,5 +1,8 @@
 package microservices.book.multiplication.service;
 
+/**
+ * This interface provides all the allowed operations that a consumer can do to generate randomly factors.
+ */
 public interface RandomGeneratorService {
 
   /**

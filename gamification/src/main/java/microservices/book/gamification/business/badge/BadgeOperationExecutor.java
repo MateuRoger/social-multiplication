@@ -1,9 +1,9 @@
 package microservices.book.gamification.business.badge;
 
 import java.util.ArrayDeque;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import microservices.book.gamification.domain.Badge;
 
 /**
@@ -25,10 +25,10 @@ public class BadgeOperationExecutor {
   /**
    * Executes all the enqueued operations.
    *
-   * @return a set of {@link Badge} processed.
+   * @return a list of {@link Badge} processed.
    */
-  public Set<Badge> executeAllOperations() {
-    final Set<Badge> newBadges = new HashSet<>();
+  public List<Badge> executeAllOperations() {
+    final List<Badge> newBadges = new ArrayList<>();
     operationQueue.forEach(
         badgeOperation -> badgeOperation.execute().ifPresent(newBadges::add));
 

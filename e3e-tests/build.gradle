@@ -1,0 +1,35 @@
+apply plugin: 'java'
+
+group = 'microservice.book'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 11
+targetCompatibility = 11
+
+// Versioning of dependencies
+wrapper.gradleVersion = '6.0'
+def cucumberVersion = '4.7.4'
+def junitVersion = '5.5.0'
+def assertJVersion = '3.13.2'
+def httpFluentVersion = "4.5.10"
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencies {
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:${junitVersion}"
+    testImplementation "org.assertj:assertj-core:${assertJVersion}"
+
+    
+    testImplementation "org.apache.httpcomponents:fluent-hc:${httpFluentVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}
