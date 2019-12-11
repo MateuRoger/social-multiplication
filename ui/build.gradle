@@ -1,0 +1,33 @@
+plugins {
+    id 'com.bmuschko.docker-remote-api' version '6.0.0'
+    id "com.palantir.docker-compose" version "0.22.1"
+}
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+group = 'microservice.book'
+version = '0.0.1-SNAPSHOT'
+
+wrapper {
+    version = '6.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.create('createDockerfile', Dockerfile) {
+    destFile.set(project.file('Dockerfile'))
+    group 'docker'
+    from 'jetty:latest'
+    user 'root'
+    runCommand 'wget -q -O /corretto.deb "https://d3pxv6yz143wms.cloudfront.net/11.0.5.10.1/java-11-amazon-corretto-jdk_11.0.5.10-1_amd64.deb"'
+    runCommand 'apt update && apt -y install default-jdk && rm -rf /var/cache/apt/*'
+    runCommand 'dpkg -i /corretto.deb'
+    user 'jetty'
+    environmentVariable("JAVA_HOME", "/usr/lib/jvm/java-11-amazon-corretto")
+    exposePort 9090
+    copyFile "webapps", "/var/lib/jetty/webapps/ui"
+    copyFile "start.d", "/var/lib/jetty/start.d"
+//    instruction 'HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1'
+}

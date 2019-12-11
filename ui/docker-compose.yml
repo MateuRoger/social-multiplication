@@ -1,0 +1,11 @@
+version: '3'
+services:
+  jetty-server:
+    container_name: social-multiplication-jetty
+    image: jetty:9.4-jre11
+    volumes:
+      - ./ui/webapps:/var/lib/jetty/webapps/ui
+      - ./ui/start.d:/var/lib/jetty/start.d
+    ports:
+      - 9090:9090
+      - 443:8443
