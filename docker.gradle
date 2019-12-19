@@ -1,0 +1,75 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:6.1.1'
+        classpath "com.avast.gradle:gradle-docker-compose-plugin:0.10.7"
+    }
+}
+
+apply plugin: DockerRemoteApiPlugin
+apply plugin: 'docker-compose'
+
+
+import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import org.apache.tools.ant.filters.ReplaceTokens
+
+rootProject.ext.dockerGroupName = "docker"
+rootProject.ext.dockerImageName = "multiplication-" + project.name + "-service"
+
+task createDockerfile(type: Dockerfile) {
+    group = project.dockerGroupName
+    description 'Generate docker file for the application'
+    from 'jetty:alpine'
+    label(['maintainer': 'mateu.roger@gmail.com'])
+
+    exposePort 9090, 8443
+    copyFile "webapps", "/var/lib/jetty/webapps/ui"
+    copyFile "start.d", "/var/lib/jetty/start.d"
+}
+
+
+task removeAppImage(type: DockerRemoveImage) {
+    group = project.dockerGroupName
+    description 'Remove the docker image using force'
+    force = true
+    targetImageId(project.dockerImageName.toString())
+    onError { exception ->
+        if (exception.message.contains('No such image')) {
+            println 'Docker image not found for the current project.'
+        }
+    }
+}
+
+task createAppImage(type: DockerBuildImage) {
+    dependsOn removeAppImage
+    dependsOn createDockerfile
+    group = project.dockerGroupName
+    description 'Generates a docker file and builds image from it'
+    dockerFile.set(createDockerfile.destFile)
+    inputDir.set(project.layout.buildDirectory.dir('.'))
+    images.add(project.dockerImageName)
+}
+
+
+task generateDockerComposeFile(type: Copy) {
+    group = project.dockerGroupName
+    from("docker/templates") {
+        include("docker-compose.yml.template")
+        filter( ReplaceTokens, tokens: ["dockerImageName": project.dockerImageName])
+        filter( ReplaceTokens, tokens: ["dockerImageTag": "latest"])
+        rename 'docker-compose.yml.template', 'docker-compose.yml'
+    }
+    into "$buildDir/docker"
+}
+
+
+
+dockerCompose {
+    useComposeFiles = ["$buildDir/docker/docker-compose.yml"]
+}

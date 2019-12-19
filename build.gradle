@@ -1,0 +1,19 @@
+plugins {
+    id 'com.avast.gradle.docker-compose' version "0.10.7"
+    id 'com.bmuschko.docker-remote-api' version '6.1.1'
+}
+
+wrapper.gradleVersion = "6.0"
+
+subprojects {
+
+    apply from: '../docker.gradle'
+
+    repositories {
+        mavenCentral()
+    }
+
+    group = 'microservice.book'
+    version = '0.0.1-SNAPSHOT'
+}
+
