@@ -1,31 +1,9 @@
 plugins {
 	id 'org.springframework.boot' version '2.2.1.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
-group = 'microservice.book'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = JavaVersion.VERSION_11
-
-wrapper {
-	version = '6.0'
-}
-
-repositories {
-	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
-}
-
-ext {
-	set('springCloudVersion', "Hoxton.RC2")
-}
 
 dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -33,31 +11,4 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.netflix.servo:servo-core'
-
-
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
-}
-
-test {
-	useJUnitPlatform()
-}
-
-def activeProfile = "test"
-
-bootRun {
-	println("bootRun")
-	if (!activeProfile.isEmpty()) {
-		systemProperty "spring.profiles.active", activeProfile
-	}
 }

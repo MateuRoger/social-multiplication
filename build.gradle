@@ -1,19 +1,70 @@
 plugins {
     id 'com.avast.gradle.docker-compose' version "0.10.7"
     id 'com.bmuschko.docker-remote-api' version '6.1.1'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
 wrapper.gradleVersion = "6.0"
+
+rootProject.ext.activeProfile = "test"
+rootProject.ext.springCloudVersion = "Hoxton.RC2"
+rootProject.ext.assertJVersion = '3.13.2'
 
 subprojects {
 
     apply from: '../docker.gradle'
 
+    group = 'microservice.book'
+
     repositories {
         mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
     }
 
-    group = 'microservice.book'
-    version = '0.0.1-SNAPSHOT'
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:deprecation,unchecked"
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    subprojects.findAll { subproject -> subproject.plugins.hasPlugin("java")}.forEach{
+        configurations {
+            compileOnly {
+                extendsFrom annotationProcessor
+            }
+        }
+        dependencies {
+            compileOnly 'org.projectlombok:lombok'
+            annotationProcessor 'org.projectlombok:lombok'
+            testImplementation "org.junit.jupiter:junit-jupiter-api"
+            testImplementation "org.assertj:assertj-core:${assertJVersion}"
+            testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+        }
+
+        test {
+            useJUnitPlatform()
+        }
+    }
+
+    subprojects.findAll { subproject -> subproject.plugins.hasPlugin("org.springframework.boot")}.forEach{
+        dependencies {
+            testImplementation('org.springframework.boot:spring-boot-starter-test') {
+                exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+            }
+        }
+
+        dependencyManagement {
+            imports {
+                mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            }
+        }
+
+//        bootRun {
+//            if (!rootProject.ext.activeProfile.isEmpty()) {
+//                systemProperty "spring.profiles.active", rootProject.ext.activeProfile
+//            }
+//        }
+    }
+
 }
 

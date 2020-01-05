@@ -19,18 +19,40 @@ import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import org.apache.tools.ant.filters.ReplaceTokens
 
+import java.util.stream.Stream
+
 rootProject.ext.dockerGroupName = "docker"
-rootProject.ext.dockerImageName = "multiplication-" + project.name + "-service"
+project.ext.dockerImageName = "multiplication-" + project.name + "-service"
+rootProject.ext.dockerFilePropHeader = "docker.file."
+rootProject.ext.dockerFilePropFrom = dockerFilePropHeader + "from"
+rootProject.ext.dockerFilePropLabel = dockerFilePropHeader + "label"
+rootProject.ext.dockerFilePropExposePort = dockerFilePropHeader + "exposePort"
+rootProject.ext.dockerFilePropCopyFile = dockerFilePropHeader + "copyFile"
 
 task createDockerfile(type: Dockerfile) {
     group = project.dockerGroupName
     description 'Generate docker file for the application'
-    from 'jetty:alpine'
-    label(['maintainer': 'mateu.roger@gmail.com'])
 
-    exposePort 9090, 8443
-    copyFile "webapps", "/var/lib/jetty/webapps/ui"
-    copyFile "start.d", "/var/lib/jetty/start.d"
+    def dockerFileProps = new Properties()
+    file(project.file("docker/dockerFileProps.properties")).withInputStream { dockerFileProps.load(it) }
+
+    from dockerFileProps.getProperty(dockerFilePropFrom)
+
+    if (dockerFileProps.containsKey(dockerFilePropLabel)) {
+        label(dockerFileProps.getProperty(dockerFilePropLabel.toString()).split(',').toList().toSpreadMap())
+    }
+
+    if (dockerFileProps.containsKey(dockerFilePropExposePort.toString())) {
+        exposePort(*(Stream.of(dockerFileProps.getProperty(dockerFilePropExposePort.toString()).split(','))
+                .mapToInt { port -> Integer.parseInt(port) }
+                .toArray()))
+    }
+
+    if (dockerFileProps.containsKey(dockerFilePropCopyFile)) {
+        dockerFileProps.getProperty(dockerFilePropCopyFile.toString()).split(',').toList().toSpreadMap()
+                .each { key, val -> copyFile key.toString(), val.toString() }
+    }
+
 }
 
 
@@ -61,13 +83,12 @@ task generateDockerComposeFile(type: Copy) {
     group = project.dockerGroupName
     from("docker/templates") {
         include("docker-compose.yml.template")
-        filter( ReplaceTokens, tokens: ["dockerImageName": project.dockerImageName])
-        filter( ReplaceTokens, tokens: ["dockerImageTag": "latest"])
+        filter(ReplaceTokens, tokens: ["dockerImageName": project.dockerImageName])
+        filter(ReplaceTokens, tokens: ["dockerImageTag": "latest"])
         rename 'docker-compose.yml.template', 'docker-compose.yml'
     }
     into "$buildDir/docker"
 }
-
 
 
 dockerCompose {

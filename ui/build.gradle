@@ -2,6 +2,7 @@ project.ext.webAppsName = "webapps"
 project.ext.startD = "start.d"
 project.ext.serviceGroupName = "ui-service"
 
+version = '0.0.1-SNAPSHOT'
 
 task clean(type: Delete) {
     group = project.serviceGroupName

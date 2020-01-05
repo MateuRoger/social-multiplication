@@ -1,0 +1,8 @@
+version: '3'
+services:
+  jetty-server:
+    container_name: @dockerImageName@
+    image: @dockerImageName@:@dockerImageTag@
+    ports:
+      - 9090:9090
+      - 443:8443

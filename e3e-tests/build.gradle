@@ -7,6 +7,7 @@ targetCompatibility = 11
 
 // Versioning of dependencies
 wrapper.gradleVersion = '6.0'
+
 def cucumberVersion = '4.7.4'
 def junitVersion = '5.5.0'
 def assertJVersion = '3.13.2'
