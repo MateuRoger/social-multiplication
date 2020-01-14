@@ -1,6 +1,6 @@
 version: '3'
 services:
-  jetty-server:
+  @dockerServiceName@:
     container_name: @dockerImageName@
     image: @dockerImageName@:@dockerImageTag@
     ports:

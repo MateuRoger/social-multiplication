@@ -23,8 +23,10 @@ import java.util.stream.Stream
 
 rootProject.ext.dockerGroupName = "docker"
 project.ext.dockerImageName = "multiplication-" + project.name + "-service"
+project.ext.dockerServiceName = project.name + "-service"
 rootProject.ext.dockerFilePropHeader = "docker.file."
 rootProject.ext.dockerFilePropFrom = dockerFilePropHeader + "from"
+rootProject.ext.dockerFilePropServiceName = dockerFilePropHeader + "dockerServiceName"
 rootProject.ext.dockerFilePropLabel = dockerFilePropHeader + "label"
 rootProject.ext.dockerFilePropExposePort = dockerFilePropHeader + "exposePort"
 rootProject.ext.dockerFilePropCopyFile = dockerFilePropHeader + "copyFile"
@@ -84,6 +86,7 @@ task generateDockerComposeFile(type: Copy) {
     from("docker/templates") {
         include("docker-compose.yml.template")
         filter(ReplaceTokens, tokens: ["dockerImageName": project.dockerImageName])
+        filter(ReplaceTokens, tokens: ["dockerServiceName": project.dockerServiceName])
         filter(ReplaceTokens, tokens: ["dockerImageTag": "latest"])
         rename 'docker-compose.yml.template', 'docker-compose.yml'
     }
