@@ -1,7 +1,6 @@
 plugins {
     id 'com.avast.gradle.docker-compose' version "0.10.7"
     id 'com.bmuschko.docker-remote-api' version '6.1.1'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
 wrapper.gradleVersion = "6.0"
@@ -27,12 +26,14 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    subprojects.findAll { subproject -> subproject.plugins.hasPlugin("java")}.forEach{
+    findAll { subproject -> subproject.plugins.hasPlugin("java")}.forEach{
+
         configurations {
             compileOnly {
                 extendsFrom annotationProcessor
             }
         }
+
         dependencies {
             compileOnly 'org.projectlombok:lombok'
             annotationProcessor 'org.projectlombok:lombok'
@@ -46,18 +47,19 @@ subprojects {
         }
     }
 
-    subprojects.findAll { subproject -> subproject.plugins.hasPlugin("org.springframework.boot")}.forEach{
-        dependencies {
-            testImplementation('org.springframework.boot:spring-boot-starter-test') {
-                exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-            }
-        }
-
-        dependencyManagement {
-            imports {
-                mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-            }
-        }
+    findAll { subproject -> subproject.plugins.hasPlugin("org.springframework.boot")}.forEach{
+        println it
+//        dependencies {
+//            testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//                exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+//            }
+//        }
+//
+//        dependencyManagement {
+//            imports {
+//                mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+//            }
+//        }
 
 //        bootRun {
 //            if (!rootProject.ext.activeProfile.isEmpty()) {

@@ -2,12 +2,28 @@ import org.gradle.api.Task
 
 plugins {
     id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
     id 'java'
 }
 
 version = '0.0.1-SNAPSHOT'
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${rootProject.ext.springCloudVersion}"
+    }
+}
+
 dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -17,5 +33,9 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
 }
 
